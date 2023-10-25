@@ -1,2 +1,2 @@
-# nlchi-hial-test-hub
+# NLCHI-HIALTestHub
 HIAL performance testing tool
