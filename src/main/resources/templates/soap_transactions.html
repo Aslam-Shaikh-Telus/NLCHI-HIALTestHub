@@ -10,8 +10,12 @@
 </head>
 
 <body>
-	<div class="container">
-		<h1>SOAP Transactions</h1>
+	<div class="container-fluid">
+		<br>
+		<div>
+			<h1>SOAP Transactions</h1>
+		</div>
+		<br>
 		<table id="soapTransactionTable" class="table table-striped table-bordered">
 			<thead class="thead-dark">
 				<tr>
@@ -22,6 +26,7 @@
 					<th>Response Status</th>
 					<th>Response Type Code</th>
 					<th>Response Time</th>
+					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -58,6 +63,9 @@
 				method: 'GET',
 				dataType: 'json',
 				success: function (data) {
+					// Reverse the order of data to show latest transactions first
+					data.reverse();
+
 					// Clear the table
 					$('#soapTransactionTable tbody').empty();
 
@@ -66,20 +74,30 @@
 
 						var formattedTimestamp = formatTimestamp(transaction.soapResponse.timeStamp);
 
+						var actionButton = '<button type="button" class="btn btn-primary" onclick="openDetailsInNewTab(\'' + transaction.msgId + '\')">Get details</button>';
+
 						$('#soapTransactionTable tbody').append(
 							'<tr>' +
-							'<td>' + (index + 1) + '</td>' +
+							'<td>' + (data.length - index) + '</td>' +
 							'<td>' + formattedTimestamp + '</td>' +
 							'<td>' + transaction.msgId + '</td>' +
 							'<td>' + transaction.soapRequest.interactionId + '</td>' +
 							'<td>' + transaction.soapResponse.responseStatus + '</td>' +
 							'<td>' + transaction.soapResponse.responseTypeCode + '</td>' +
 							'<td>' + transaction.soapResponse.responseTime + '</td>' +
+							'<td>' + actionButton + '</td>' +
 							'</tr>'
 						);
 					});
 				}
 			});
+		}
+
+		// Function to open the details page with the selected Msg ID in a new tab
+		function openDetailsInNewTab(msgId) {
+			var url = '/runtest/details?msgId=' + msgId;
+			var win = window.open(url, '_blank');
+			win.focus();
 		}
 
 		// Initial load of the table

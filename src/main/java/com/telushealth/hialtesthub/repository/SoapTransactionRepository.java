@@ -35,4 +35,9 @@ public class SoapTransactionRepository {
 	public List<SoapTransaction> findAll() {
 		return mongoTemplate.findAll(SoapTransaction.class);
 	}
+
+	public SoapTransaction findByMsgId(String msgId) {
+		Query query = new Query(Criteria.where("msgId").is(msgId));
+		return mongoTemplate.findOne(query, SoapTransaction.class);
+	}
 }

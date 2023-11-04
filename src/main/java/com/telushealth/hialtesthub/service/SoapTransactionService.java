@@ -122,8 +122,11 @@ public class SoapTransactionService {
 	}	
 
 	public List<SoapTransaction> findAllSoapTransactions() {
-		// TODO Auto-generated method stub
 		return soapTransactionRepository.findAll();
+	}
+
+	public SoapTransaction retrieveTransactionsByMsgId(String msgId) {
+		return soapTransactionRepository.findByMsgId(msgId);
 	}
 
 }
