@@ -55,4 +55,9 @@ public class EndpointRespository implements CommandLineRunner{
 		return mongoTemplate.findOne(query, Endpoint.class);
 	}
 
+	public void save(Endpoint endpoint) {
+		mongoTemplate.save(Endpoint.class);
+		
+	}
+
 }

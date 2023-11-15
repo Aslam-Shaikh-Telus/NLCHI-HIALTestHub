@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>HIALTestHub | Login</title>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<br>
+	<br>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="text-center">Welcome to HIALTestHub!</h3>
+					</div>
+					<div class="card-body">
+						<form id="loginForm" th:action="@{/endpoint}" th:object="${endpoint}" method="POST">
+							<div class="form-group">
+								<label for="endpointIP">HIAL Endpoint IP:</label>
+								<input type="text" class="form-control" id="endpointIP" name="endpointIP"
+									th:field="*{ipAddress}" placeholder="Enter HIAL Endpoint IP" required>
+							</div>
+							<div class="form-group">
+								<label for="username">Username:</label>
+								<input type="text" class="form-control" id="username" name="username"
+									th:field="*{username}" placeholder="Enter Test User's Username" required>
+							</div>
+							<div class="form-group">
+								<label for="password">Password:</label>
+								<input type="password" class="form-control" id="password" name="password"
+									th:field="*{password}" placeholder="Enter Test User's Password" required>
+							</div>
+							<div class="form-group">
+								<label for="environment">Environment:</label>
+								<select class="form-control" id="environment" name="environment"
+									th:field="*{testOrprod}" required>
+									<option value="/T/">Test (T)</option>
+									<option value="/P/">Production (P)</option>
+								</select>
+							</div>
+							<div class="box-footer justify-content-center" >
+								<button type="submit" class="btn btn-primary">Login</button>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- JavaScript code to handle form submission can be added here -->
+
+</body>
+
+</htmlxmlns:th="http: //www.thymeleaf.org">

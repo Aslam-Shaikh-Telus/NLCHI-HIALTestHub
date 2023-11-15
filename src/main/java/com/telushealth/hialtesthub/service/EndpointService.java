@@ -22,4 +22,8 @@ public class EndpointService {
 		return endpointRepository.findByHostname(string);
 	}
 
+	public void save(Endpoint endpoint) {
+		endpointRepository.save(endpoint);
+	}
+
 }
