@@ -21,21 +21,11 @@ public class SoapTransaction {
 	@Field("soapResponse")
 	SoapResponse soapResponse;
 
-//	@Transient
-//	@Autowired
-//	private Endpoint endpoint;
-//	@Transient
-//	private TestCase testCase;
-
 	public SoapTransaction() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public SoapTransaction(Endpoint endpoint, TestCase testCase) {
-
-//		setEndpoint(endpoint);
-//		setTestCase(testCase);
 
 		this.soapRequest = new SoapRequest(msgId, endpoint, testCase);
 		this.soapResponse = new SoapResponse(msgId, this.soapRequest);
@@ -64,21 +54,5 @@ public class SoapTransaction {
 	public void setMsgId(String msgId) {
 		this.msgId = msgId;
 	}
-
-//	public Endpoint getEndpoint() {
-//		return endpoint;
-//	}
-//
-//	public void setEndpoint(Endpoint endpoint) {
-//		this.endpoint = endpoint;
-//	}
-//
-//	public TestCase getTestCase() {
-//		return testCase;
-//	}
-//
-//	public void setTestCase(TestCase testCase) {
-//		this.testCase = testCase;
-//	}
 
 }
