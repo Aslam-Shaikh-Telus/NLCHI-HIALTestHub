@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HIALTestHub | Index</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+        <div class="container-fluid text-white">
+            <a class="navbar-brand" href="#">HIALTestHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/sanity">Sanity Test</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/loadtest">Load Test</a>
+                    </li>
+                </ul>
+                <form class="d-flex flex-row">
+                    <span class="navbar-text p-2 flex-grow-1">username@endpointIP</span>
+                    <button class="p-2 btn btn-sm btn-outline-danger" type="reset">Log Out</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="p-3">
+            <h1>HIAL e2e Testing</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row" id="soapTransactionCards">
+            <!-- SOAP transaction cards will be loaded here via AJAX -->
+        </div>
+    </div>
+
+
+    <script>
+        function updateSoapTransactionCards() {
+            $.ajax({
+                url: '/runtest/getSoapTransactions', // Update the URL to match your endpoint
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Reverse the order of data to show latest transactions first
+                    data.reverse();
+
+                    // Clear the card container
+                    $('#soapTransactionCards').empty();
+
+                    // Iterate through the data and append cards to the container
+                    $.each(data, function (index, transaction) {
+                        var formattedTimestamp = formatTimestamp(transaction.soapResponse.timeStamp);
+
+                        var card = `
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${formattedTimestamp}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">${transaction.msgId}</h6>
+                                        <p class="card-text">
+                                            Interaction ID: ${transaction.soapRequest.interactionId}<br>
+                                            Response Status: ${transaction.soapResponse.responseStatus}<br>
+                                            Response Type Code: ${transaction.soapResponse.responseTypeCode}<br>
+                                            Response Time: ${transaction.soapResponse.responseTime}
+                                        </p>
+                                        <a href="#" class="card-link" onclick="openDetailsInNewTab('${transaction.msgId}')">Get details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        $('#soapTransactionCards').append(card);
+                    });
+                }
+            });
+        }
+
+        // Initial load of the card container
+        updateSoapTransactionCards();
+
+        // Refresh the card container every 2 seconds
+        setInterval(updateSoapTransactionCards, 2000); // Adjust the interval as needed
+    </script>
+</body>
+
+</html>

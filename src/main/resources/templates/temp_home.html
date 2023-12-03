@@ -3,15 +3,14 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>HIALTesthub | Show Soap Transaction</title>
-	<!-- Include Bootstrap CSS -->
+	<title>HIALTestHub | Home</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary sticky-top">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
 		<div class="container-fluid text-white">
 			<a class="navbar-brand" href="#">HIALTestHub</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -35,32 +34,22 @@
 			</div>
 		</div>
 	</nav>
+
 	<div class="container-fluid">
-		<br>
-		<div>
-			<h1>SOAP Transactions</h1>
+		<div class="p-3">
+			<h1>HIAL e2e Testing</h1>
 		</div>
-		<br>
-		<table id="soapTransactionTable" class="table table-hover table-bordered">
-			<thead class="table-dark">
-				<tr>
-					<th>No.</th>
-					<th>Timestamp</th>
-					<th>Msg ID</th>
-					<th>Interaction ID</th>
-					<th>Response Status</th>
-					<th>Response Type Code</th>
-					<th>Response Time</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- Data will be loaded here via AJAX -->
-			</tbody>
-		</table>
 	</div>
 
+	<div class="container-fluid">
+		<div class="row-lg-1" id="soapTransactionCards">
+			<!-- SOAP transaction cards will be loaded here via AJAX -->
+		</div>
+	</div>
+
+
 	<script>
+
 		// Function to format the timestamp
 		function formatTimestamp(timestamp) {
 			// Convert the timestamp to a Date object
@@ -81,18 +70,8 @@
 			return formattedTimestamp;
 		}
 
-		function getRowBackgroundColor(responseStatus, responseTypeCode) {
-			if (responseStatus === 'FAIL') {
-				return 'table-danger';
-			} else if (responseStatus === 'PASSED' && responseTypeCode === 'AA') {
-				return 'table-success';
-			} else {
-				return 'table-warning';
-			}
-		}
-
-		// Function to update the table with SOAP transactions data
-		function updateSoapTransactionTable() {
+		// Function to update the SOAP transaction cards
+		function updateSoapTransactionCards() {
 			$.ajax({
 				url: '/runtest/getSoapTransactions', // Update the URL to match your endpoint
 				method: 'GET',
@@ -101,48 +80,41 @@
 					// Reverse the order of data to show latest transactions first
 					data.reverse();
 
-					// Clear the table
-					$('#soapTransactionTable tbody').empty();
+					// Clear the card container
+					$('#soapTransactionCards').empty();
 
-					// Iterate through the data and append rows to the table
+					// Iterate through the data and create cards
 					$.each(data, function (index, transaction) {
-
 						var formattedTimestamp = formatTimestamp(transaction.soapResponse.timeStamp);
 
-						var actionButton = '<button type="button" class="btn btn-outline-primary" onclick="openDetailsInNewTab(\'' + transaction.msgId + '\')">Get details</button>';
+						var cardHtml =
+							'<div class="col">' +
+							'<div class="card border-dark mb-3">' +
+							'<div class="card-body">' +
+							'<h5 class="card-title">' + transaction.msgId + '</h5>' +
+							'<h6 class="card-subtitle mb-2 text-muted">' + formattedTimestamp + '</h6>' +
+							'<p class="card-text">' +
+							'Interaction ID: ' + transaction.soapRequest.interactionId + '<br>' +
+							'Response Status: ' + transaction.soapResponse.responseStatus + '<br>' +
+							'Response Type Code: ' + transaction.soapResponse.responseTypeCode + '<br>' +
+							'Response Time: ' + transaction.soapResponse.responseTime +
+							'</p>' +
+							'<button type="button" class="btn btn-primary" onclick="openDetailsInNewTab(\'' + transaction.msgId + '\')">Get details</button>' +
+							'</div>' +
+							'</div>' +
+							'</div>';
 
-						// Get the background color based on Response Status and Response Type Code
-						var rowBackgroundColor = getRowBackgroundColor(transaction.soapResponse.responseStatus, transaction.soapResponse.responseTypeCode);
-
-						$('#soapTransactionTable tbody').append(
-							'<tr class="' + rowBackgroundColor + '">' +
-							'<td>' + (data.length - index) + '</td>' +
-							'<td>' + formattedTimestamp + '</td>' +
-							'<td>' + transaction.msgId + '</td>' +
-							'<td>' + transaction.soapRequest.interactionId + '</td>' +
-							'<td>' + transaction.soapResponse.responseStatus + '</td>' +
-							'<td>' + transaction.soapResponse.responseTypeCode + '</td>' +
-							'<td>' + transaction.soapResponse.responseTime + '</td>' +
-							'<td>' + actionButton + '</td>' +
-							'</tr>'
-						);
+						$('#soapTransactionCards').append(cardHtml);
 					});
 				}
 			});
 		}
 
-		// Function to open the details page with the selected Msg ID in a new tab
-		function openDetailsInNewTab(msgId) {
-			var url = '/runtest/details?msgId=' + msgId;
-			var win = window.open(url, '_blank');
-			win.focus();
-		}
+		// Initial load of the card container
+		updateSoapTransactionCards();
 
-		// Initial load of the table
-		updateSoapTransactionTable();
-
-		// Refresh the table every 2 seconds
-		setInterval(updateSoapTransactionTable, 2000); // Adjust the interval as needed
+		// Refresh the card container every 2 seconds
+		setInterval(updateSoapTransactionCards, 2000); // Adjust the interval as needed
 	</script>
 </body>
 

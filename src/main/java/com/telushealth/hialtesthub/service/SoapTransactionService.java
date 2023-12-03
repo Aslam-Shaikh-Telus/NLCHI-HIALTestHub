@@ -25,23 +25,25 @@ public class SoapTransactionService {
 
 	@Autowired
 	SoapTransactionRepository soapTransactionRepository;
+	
+	
 
 	public SoapTransaction runSoapTest(String interactionId) {
 
 		TestCase testCase = testService.findTestCaseByInteractionId(interactionId);
-		Endpoint endpoint = endpointService.findByHostname("nlap002");
+		Endpoint endpoint = endpointService.getEndpoint();
 
 		SoapTransaction soapTransaction = new SoapTransaction(endpoint, testCase);
 		soapTransactionRepository.save(soapTransaction);
-
-		return soapTransactionRepository.findByInteractionId(interactionId);
+		return soapTransaction;
+//		return soapTransactionRepository.findByInteractionId(interactionId);
 
 	}
 
 	public List<SoapTransaction> runSanityTest() {
 
 		List<TestCase> testCases = testService.findAllTestCases();
-		Endpoint endpoint = endpointService.findByHostname("nlap002");
+		Endpoint endpoint = endpointService.getEndpoint();
 
 		List<SoapTransaction> soapTransactions = new ArrayList<>();
 
@@ -58,7 +60,7 @@ public class SoapTransactionService {
 //	public List<SoapTransaction> runLoadTest(int numThreads, long testDurationSeconds) {
 //
 //		List<TestCase> testCases = testService.findAllTestCases();
-//		Endpoint endpoint = endpointService.findByHostname("nlap002");
+//		Endpoint endpoint = endpointService.getEndpoint();
 //
 //		for (int i = 0; i < numThreads; i++) {
 //
@@ -82,7 +84,7 @@ public class SoapTransactionService {
 	
 	public List<SoapTransaction> runLoadTest(int numThreads, long testDurationSeconds) {
 	    List<TestCase> testCases = testService.findAllTestCases();
-	    Endpoint endpoint = endpointService.findByHostname("nlap002");
+	    Endpoint endpoint = endpointService.getEndpoint();
 
 	    // Create a thread pool
 	    ExecutorService executor = Executors.newFixedThreadPool(numThreads);

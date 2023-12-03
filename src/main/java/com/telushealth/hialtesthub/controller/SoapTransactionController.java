@@ -66,16 +66,16 @@ public class SoapTransactionController {
 	public List<SoapTransaction> getSoapTransactions() {
 		return soapTransactionService.findAllSoapTransactions();
 	}
-	
-	
+
 	@GetMapping("/details")
-    public String showTransactionDetails(@RequestParam("msgId") String msgId, Model model) {
-        // Retrieve transactions with the specified msgId (you need to implement this method)
-        SoapTransaction soapTransaction = soapTransactionService.retrieveTransactionsByMsgId(msgId);
+	public String showTransactionDetails(@RequestParam("msgId") String msgId, Model model) {
+		// Retrieve transactions with the specified msgId (you need to implement this
+		// method)
+		SoapTransaction soapTransaction = soapTransactionService.retrieveTransactionsByMsgId(msgId);
 
-        // Add transactions to the model
-        model.addAttribute("transaction", soapTransaction);
+		// Add transactions to the model
+		model.addAttribute("transaction", soapTransaction);
 
-        return "details";
-    }
+		return "details";
+	}
 }
