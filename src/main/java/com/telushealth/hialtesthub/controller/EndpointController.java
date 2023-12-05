@@ -17,24 +17,21 @@ import com.telushealth.hialtesthub.entity.TestCase;
 import com.telushealth.hialtesthub.service.EndpointService;
 import com.telushealth.hialtesthub.service.TestService;
 
-@Controller
-@RequestMapping
+@RestController
+@RequestMapping("/api/endpoint")
 public class EndpointController {
 
 	@Autowired
 	EndpointService endpointService;
 
-	@GetMapping("/endpoint")
-	@ResponseBody
+	@GetMapping("/get")
 	public List<Endpoint> getAllEndpoint() {
 		return endpointService.getAll();
 	}
-	
-	@PostMapping("/endpoint/save")
-	public void saveEndpoint(@ModelAttribute Endpoint endpoint) {
-		
+
+	@PostMapping("/save")
+	public void saveEndpoint(@RequestBody Endpoint endpoint) {
 		endpointService.saveEndpoint(endpoint);
-		 
 	}
 
 }

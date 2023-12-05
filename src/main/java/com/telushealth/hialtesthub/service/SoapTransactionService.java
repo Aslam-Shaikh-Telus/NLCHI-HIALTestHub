@@ -1,20 +1,15 @@
 package com.telushealth.hialtesthub.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-import com.telushealth.hialtesthub.entity.Endpoint;
 import com.telushealth.hialtesthub.entity.SoapTransaction;
-import com.telushealth.hialtesthub.entity.TestCase;
+import com.telushealth.hialtesthub.entity.TestResultStat;
 import com.telushealth.hialtesthub.repository.SoapTransactionRepository;
 
-@Repository
+@Service
 public class SoapTransactionService {
 
 	@Autowired
@@ -25,103 +20,6 @@ public class SoapTransactionService {
 
 	@Autowired
 	SoapTransactionRepository soapTransactionRepository;
-	
-	
-
-	public SoapTransaction runSoapTest(String interactionId) {
-
-		TestCase testCase = testService.findTestCaseByInteractionId(interactionId);
-		Endpoint endpoint = endpointService.getEndpoint();
-
-		SoapTransaction soapTransaction = new SoapTransaction(endpoint, testCase);
-		soapTransactionRepository.save(soapTransaction);
-		return soapTransaction;
-//		return soapTransactionRepository.findByInteractionId(interactionId);
-
-	}
-
-	public List<SoapTransaction> runSanityTest() {
-
-		List<TestCase> testCases = testService.findAllTestCases();
-		Endpoint endpoint = endpointService.getEndpoint();
-
-		List<SoapTransaction> soapTransactions = new ArrayList<>();
-
-		for (TestCase testCase : testCases) {
-
-			SoapTransaction soapTransaction = new SoapTransaction(endpoint, testCase);
-			soapTransactions.add(soapTransaction);
-			soapTransactionRepository.save(soapTransaction);
-		}
-
-		return soapTransactionRepository.findAll();
-	}
-
-//	public List<SoapTransaction> runLoadTest(int numThreads, long testDurationSeconds) {
-//
-//		List<TestCase> testCases = testService.findAllTestCases();
-//		Endpoint endpoint = endpointService.getEndpoint();
-//
-//		for (int i = 0; i < numThreads; i++) {
-//
-//			Thread thread = new Thread(new CustomRunner(endpoint, testCases));
-//			thread.start();
-//		}
-//
-//		// Allow threads to run for the specified duration
-//		try {
-//			Thread.sleep(testDurationSeconds * 1000);
-//		} catch (InterruptedException e) {
-//			// Handle interruption if needed
-//			e.printStackTrace();
-//		}
-//
-//		CustomRunner.active = false;
-//
-//		// return soapTransactionRepository.findAll();
-//		return null;
-//	}
-	
-	public List<SoapTransaction> runLoadTest(int numThreads, long testDurationSeconds) {
-	    List<TestCase> testCases = testService.findAllTestCases();
-	    Endpoint endpoint = endpointService.getEndpoint();
-
-	    // Create a thread pool
-	    ExecutorService executor = Executors.newFixedThreadPool(numThreads);
-	    
-	    // Create a CountDownLatch to wait for all threads to finish
-	    CountDownLatch latch = new CountDownLatch(numThreads);
-
-	    for (int i = 0; i < numThreads; i++) {
-	        executor.execute(new CustomRunner(endpoint, testCases, latch));
-	    }
-
-	    // Allow threads to run for the specified duration
-	    try {
-	        Thread.sleep(testDurationSeconds * 1000);
-	    } catch (InterruptedException e) {
-	        e.printStackTrace();
-	    }
-
-	    CustomRunner.active = false;
-//	    // Stop all threads
-//	    for (int i = 0; i < numThreads; i++) {
-//	        ((CustomRunner) executor).stop();
-//	    }
-
-	    // Wait for all threads to finish
-	    try {
-	        latch.await();
-	    } catch (InterruptedException e) {
-	        e.printStackTrace();
-	    }
-
-	    // Shutdown the thread pool
-	    executor.shutdown();
-
-	    // return soapTransactionRepository.findAll();
-	    return null;
-	}	
 
 	public List<SoapTransaction> findAllSoapTransactions() {
 		return soapTransactionRepository.findAll();
@@ -129,6 +27,15 @@ public class SoapTransactionService {
 
 	public SoapTransaction retrieveTransactionsByMsgId(String msgId) {
 		return soapTransactionRepository.findByMsgId(msgId);
+	}
+
+	public void save(SoapTransaction soapTransaction) {
+		soapTransactionRepository.save(soapTransaction);
+	}
+
+	public List<TestResultStat> runLoadTestAggregation(String loadTestStartTime) {
+		List<TestResultStat> testResultStats = soapTransactionRepository.runLoadTestAggregation(loadTestStartTime);
+		return testResultStats;
 	}
 
 }

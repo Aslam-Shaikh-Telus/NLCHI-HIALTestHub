@@ -14,7 +14,6 @@ public class Endpoint {
 
 	public Endpoint() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Endpoint(String ipAddress, String testOrprod, String username, String password) {

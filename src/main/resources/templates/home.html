@@ -10,31 +10,7 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary sticky-top">
-		<div class="container-fluid text-white">
-			<a class="navbar-brand" href="/home">HIALTestHub</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item">
-						<a class="nav-link" href="/sanity">Sanity Test</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/loadtest">Load Test</a>
-					</li>
-				</ul>
-				<form class="d-flex flex-row">
-					<span class="navbar-text p-2 flex-grow-1" id="usernameEndpoint">username@endpointIP</span>
-					<a class="p-2 btn btn-sm btn-outline-danger" type="reset" th:href="@{/logout}">Log Out</a>
-				</form>
-
-			</div>
-		</div>
-	</nav>
+	<div th:replace="fragments\navbar :: navbar"></div>
 
 	<div class="container-fluid">
 		<br>
@@ -55,7 +31,7 @@
 		// Function to update the username@endpointIP in the navbar
 		function updateUsernameEndpoint() {
 			$.ajax({
-				url: '/endpoint/',
+				url: '/api/endpoint/get',
 				method: 'GET',
 				dataType: 'json',
 				success: function (endpoints) {
@@ -81,7 +57,7 @@
 			showSpinner(interactionId);
 
 			$.ajax({
-				url: '/runtest/' + interactionId,
+				url: '/api/runtest/' + interactionId,
 				method: 'GET',
 				dataType: 'json',
 				success: function (soapTransaction) {
@@ -182,7 +158,7 @@
 		// Function to update the test cases initially
 		function updateTestCases() {
 			$.ajax({
-				url: '/testcases/getAll',
+				url: '/api/testcase/getAll',
 				method: 'GET',
 				dataType: 'json',
 				success: function (data) {
@@ -199,12 +175,15 @@
 
 		// Function to open the details page with the selected Msg ID in a new tab
 		function openDetailsInNewTab(msgId) {
-			var url = '/runtest/details?msgId=' + msgId;
+			var url = '/details?msgId=' + msgId;
 			var win = window.open(url, '_blank');
 			win.focus();
 		}
 
 	</script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
 </body>
 
 </html>

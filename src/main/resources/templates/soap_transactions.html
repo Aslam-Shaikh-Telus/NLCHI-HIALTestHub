@@ -11,30 +11,9 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary sticky-top">
-		<div class="container-fluid text-white">
-			<a class="navbar-brand" href="#">HIALTestHub</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item">
-						<a class="nav-link" href="/sanity">Sanity Test</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/loadtest">Load Test</a>
-					</li>
-				</ul>
-				<form class="d-flex flex-row">
-					<span class="navbar-text p-2 flex-grow-1">username@endpointIP</span>
-					<button class="p-2 btn btn-sm btn-outline-danger" type="reset">Log Out</button>
-				</form>
-			</div>
-		</div>
-	</nav>
+
+	<div th:replace="fragments\navbar :: navbar"></div>
+
 	<div class="container-fluid">
 		<br>
 		<div>
@@ -94,7 +73,7 @@
 		// Function to update the table with SOAP transactions data
 		function updateSoapTransactionTable() {
 			$.ajax({
-				url: '/runtest/getSoapTransactions', // Update the URL to match your endpoint
+				url: '/api/transactions/getAll', // Update the URL to match your endpoint
 				method: 'GET',
 				dataType: 'json',
 				success: function (data) {
@@ -133,7 +112,7 @@
 
 		// Function to open the details page with the selected Msg ID in a new tab
 		function openDetailsInNewTab(msgId) {
-			var url = '/runtest/details?msgId=' + msgId;
+			var url = '/details?msgId=' + msgId;
 			var win = window.open(url, '_blank');
 			win.focus();
 		}
@@ -144,6 +123,10 @@
 		// Refresh the table every 2 seconds
 		setInterval(updateSoapTransactionTable, 2000); // Adjust the interval as needed
 	</script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+
 </body>
 
 </html>
