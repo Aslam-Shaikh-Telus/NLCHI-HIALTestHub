@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.telushealth.hialtesthub.entity.ReportStats;
 import com.telushealth.hialtesthub.entity.SoapTransaction;
 import com.telushealth.hialtesthub.entity.TestResultStat;
 import com.telushealth.hialtesthub.repository.SoapTransactionRepository;
@@ -36,6 +37,11 @@ public class SoapTransactionService {
 	public List<TestResultStat> runLoadTestAggregation(String loadTestStartTime) {
 		List<TestResultStat> testResultStats = soapTransactionRepository.runLoadTestAggregation(loadTestStartTime);
 		return testResultStats;
+	}
+
+	public List<ReportStats> getAllResponseTime(String startTestTime, String endTestTime) {
+		// TODO Auto-generated method stub
+		return soapTransactionRepository.runAllResponseTimeAggregation(startTestTime, endTestTime);
 	}
 
 }

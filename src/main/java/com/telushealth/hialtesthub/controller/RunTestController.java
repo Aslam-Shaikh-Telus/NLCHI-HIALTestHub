@@ -33,9 +33,13 @@ public class RunTestController {
 	@GetMapping("/loadtest")
 	public LoadTestResult runLoadTest(@RequestParam("numThreads") int numThreads,
 			@RequestParam("testDurationSeconds") long testDurationSeconds) {
-
-//		return runTestService.runLoadTest(5, 22);
 		return runTestService.runLoadTest(numThreads, testDurationSeconds);
+	}
+	
+	@GetMapping("/loadtest/return-start-time")
+	public String runLoadTestReturnStartTime(@RequestParam("numThreads") int numThreads,
+			@RequestParam("testDurationSeconds") long testDurationSeconds) {
+		return runTestService.runLoadTestReturnStartTime(numThreads, testDurationSeconds);
 	}
 
 	@GetMapping("/loadtest/stop")

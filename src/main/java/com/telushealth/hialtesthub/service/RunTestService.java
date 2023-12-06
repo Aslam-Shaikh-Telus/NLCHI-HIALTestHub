@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,29 +93,28 @@ public class RunTestService {
 			executor.execute(new LoadGenerator(endpoint, testCases, latch, soapTransactionService));
 		}
 
+		// Schedule a task to update the results every 2 seconds
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+		scheduler.scheduleAtFixedRate(() -> updateLoadTestResult(loadTestStartTime), 0, 2, TimeUnit.SECONDS);
+
 		// Allow threads to run for the specified duration
 		try {
 			Thread.sleep(testDurationSeconds * 1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		} finally {
+			// Stop the load test after the specified duration
+			stopLoadTest(loadTestStartTime);
+			scheduler.shutdown(); // Shutdown the scheduler when the test is stopped
 		}
-
-		stopLoadTest(); // Stop the load test after the specified duration
-		updateLoadTestResult(loadTestStartTime);
+		
+		
 		return loadTestResultService.findTestResultByStartTime(loadTestStartTime);
 	}
 
-private void updateLoadTestResult(String loadTestStartTime) {
+	private void updateLoadTestResult(String loadTestStartTime) {
 		loadTestResultService.updateTestResult(loadTestStartTime);
 	}
-
-//	private void updateLoadTestResult(String loadTestStartTime) {
-//		LoadTestResult loadTestResult = loadTestResultService.createLoadTestResult(loadTestStartTime,
-//				numThreads, testDurationSeconds);
-//		
-//		loadTestResultService.saveLoadTestResult(loadTestResult);
-//		
-//	}
 
 	private void createLoadTestResult(String loadTestStartTime, int numThreads, long testDurationSeconds) {
 
@@ -122,6 +122,25 @@ private void updateLoadTestResult(String loadTestStartTime) {
 				testDurationSeconds);
 
 		loadTestResultService.saveLoadTestResult(loadTestResult);
+
+	}
+
+	public void stopLoadTest(String loadTestStartTime) {
+		if (executor != null) {
+			LoadGenerator.active = false;
+			executor.shutdown(); // Allow threads to finish
+			try {
+				if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+					executor.shutdownNow(); // Stop all threads forcefully if not terminated
+				}
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			} finally {
+				executor = null;
+				latch = null;
+				loadTestResultService.updateEndTestTimeInResult(loadTestStartTime,LocalDateTime.now().toString());
+			}
+		}
 
 	}
 
@@ -141,5 +160,10 @@ private void updateLoadTestResult(String loadTestStartTime) {
 			}
 		}
 
+	}
+	public String runLoadTestReturnStartTime(int numThreads, long testDurationSeconds) {
+		// Reuse existing method for running load test
+		LoadTestResult result = runLoadTest(numThreads, testDurationSeconds);
+		return result.getStartTestTime();
 	}
 }

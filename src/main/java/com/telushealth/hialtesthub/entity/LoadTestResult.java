@@ -13,6 +13,7 @@ public class LoadTestResult {
 
 	@Indexed(unique = true)
 	private String startTestTime;
+	private String endTestTime;
 	private int numThreads;
 	private long testDurationSeconds;
 
@@ -37,6 +38,14 @@ public class LoadTestResult {
 
 	public void setStartTestTime(String startTestTime) {
 		this.startTestTime = startTestTime;
+	}
+
+	public String getEndTestTime() {
+		return endTestTime;
+	}
+
+	public void setEndTestTime(String endTestTime) {
+		this.endTestTime = endTestTime;
 	}
 
 	public int getNumThreads() {

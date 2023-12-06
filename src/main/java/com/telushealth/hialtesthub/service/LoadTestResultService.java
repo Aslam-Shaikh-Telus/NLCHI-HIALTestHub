@@ -41,4 +41,12 @@ public class LoadTestResultService {
 		return loadTestResultRepository.getByStartTime(loadTestStartTime);
 	}
 
+	public LoadTestResult getLatestResult() {
+		return loadTestResultRepository.getLatestResult();
+	}
+
+	public void updateEndTestTimeInResult(String loadTestStartTime, String endTestTime) {
+		loadTestResultRepository.updateEndTestTimeInResult(loadTestStartTime, endTestTime);
+	}
+
 }
