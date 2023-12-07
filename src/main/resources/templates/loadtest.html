@@ -63,6 +63,30 @@
 			</tbody>
 		</table>
 	</div>
+	<br>
+
+	<!-- Report Stats Table -->
+	<div class="container-fluid" id="reportStatsContainer" style="display: none;">
+		<div class="d-flex flex-row">
+			<h4>Report: </h4>
+		</div>
+		<table class="table table-sm table-bordered d-inline container-flui">
+			<thead class="table-light">
+				<tr>
+					<th>Duration(s)</th>
+					<th>Interactions</th>
+					<th>% of Total</th>
+					<th>Avg Duration(s)</th>
+				</tr>
+			</thead>
+			<tbody id="reportStatsTableBody">
+				<!-- report stats rows will be loaded here via AJAX -->
+			</tbody>
+		</table>
+	</div>
+	<br>
+	<br>
+
 
 	<script>
 		// Function to update the username@endpointIP in the navbar
@@ -99,6 +123,9 @@
 				localStorage.removeItem('startTime');
 				localStorage.setItem('loadTestRunning', true);
 
+				// Display the report stats table
+				$('#reportStatsContainer').hide();
+
 				// Disable the Run button and enable the Stop button
 				$('#threads').prop('disabled', true);
 				$('#timelimit').prop('disabled', true);
@@ -122,6 +149,12 @@
 							$('#stopButton').prop('disabled', true);
 							$('#runButton').prop('disabled', false);
 
+							// Display the report stats table
+							$('#reportStatsContainer').show();
+
+							// Fetch and display report stats
+							updateReportStats(loadTestResult.startTestTime, loadTestResult.endTestTime);
+
 							localStorage.setItem('loadTestRunning', false);
 							console.log('Load test finished successfully:', updateTable(loadTestResult));
 						},
@@ -134,7 +167,7 @@
 
 
 					//var startTestTime = localStorage.getItem('loadTestResult').startTestTime;
-					console.log('localStorage start test time value: ' + (localStorage.getItem('startTime') == null ? 'null' : localStorage.getItem('startTime')));
+					//console.log('localStorage start test time value: ' + (localStorage.getItem('startTime') == null ? 'null' : localStorage.getItem('startTime')));
 					// Wait until start time is available
 					while (localStorage.getItem('startTime') == null) {
 						console.log('Waiting for start time...');
@@ -230,6 +263,17 @@
 				success: function (loadTestResult) {
 					// Update the table with the new load test results
 					updateTable(loadTestResult);
+
+					// Check if endTestTime is available
+					if (loadTestResult.endTestTime) {
+						// If endTestTime is present, the test has ended
+						localStorage.setItem('loadTestRunning', false);
+						// Display the report stats table
+						$('#reportStatsContainer').show();
+
+						// Fetch and display report stats
+						updateReportStats(loadTestResult.startTestTime, loadTestResult.endTestTime);
+					}
 				},
 				error: function () {
 					console.error('Error fetching load test results.');
@@ -317,6 +361,47 @@
 				}
 			}
 			return max;
+		}
+
+		// Function to update the report stats table
+		function updateReportStats(startTestTime, endTestTime) {
+			$.ajax({
+				url: '/api/loadtestresult/getReportStats',
+				method: 'GET',
+				data: {
+					startTestTime: startTestTime,
+					endTestTime: endTestTime
+				},
+				dataType: 'json',
+				success: function (reportStatsList) {
+					// Update the report stats table
+					updateReportStatsTable(reportStatsList);
+				},
+				error: function () {
+					console.error('Error fetching report stats.');
+				}
+			});
+		}
+
+		// Function to update the report stats table
+		function updateReportStatsTable(reportStatsList) {
+			// Clear existing rows
+			$('#reportStatsTableBody').empty();
+
+			// Check if reportStatsList is not null
+			if (reportStatsList) {
+				// Iterate through report stats and append rows to the table
+				$.each(reportStatsList, function (index, reportStats) {
+					$('#reportStatsTableBody').append(
+						'<tr>' +
+						'<td>' + reportStats.durationRange + '</td>' +
+						'<td>' + reportStats.interactions + '</td>' +
+						'<td>' + reportStats.percentageTotal.toFixed(2) + '%' + '</td>' +
+						'<td>' + reportStats.avgDuration.toFixed(3) + '</td>' +
+						'</tr>'
+					);
+				});
+			}
 		}
 
 		// Function to check if the load test is running and retrieve the start time

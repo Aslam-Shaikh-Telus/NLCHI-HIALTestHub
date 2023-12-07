@@ -1,25 +1,21 @@
 package com.telushealth.hialtesthub.repository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.mongodb.core.aggregation.ConvertOperators;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
-import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.telushealth.hialtesthub.entity.ReportStats;
 import com.telushealth.hialtesthub.entity.SoapTransaction;
 import com.telushealth.hialtesthub.entity.TestResultStat;
 
@@ -88,71 +84,17 @@ public class SoapTransactionRepository {
 		return mongoTemplate.aggregate(aggregation, SoapTransaction.class, TestResultStat.class).getMappedResults();
 	}
 
-	public List<ReportStats> runAllResponseTimeAggregation(String startTestTime, String endTestTime) {
-		// Define match operation to filter transactions between startTestTime and
-		// endTestTime
-		MatchOperation matchOperation = Aggregation
-				.match(Criteria.where("soapResponse.timeStamp").gte(startTestTime).lte(endTestTime));
+	public List<String> getAllResponseTimeBetweenTimeGiven(String startTestTime, String endTestTime) {
 
-		// Define project operation to calculate duration and other fields
-		ProjectionOperation projectOperation = Aggregation.project()
-				.and(ConvertOperators.valueOf("$soapResponse.responseTime").convertToDouble()).as("responseTime")
-				.andExpression("(responseTime / 1000)").as("durationInSeconds");
+		Criteria criteria = Criteria.where("soapResponse.timeStamp").gte(startTestTime).lte(endTestTime);
+		Query query = new Query(criteria);
 
-		// Define conditional expressions for different duration ranges
-		ConditionalOperators.Cond durationRange0To2_5 = ConditionalOperators
-				.when(Criteria.where("durationInSeconds").lte(2.5)).then("0-2.5").otherwise("Unknown");
-		ConditionalOperators.Cond durationRange2_5To5 = ConditionalOperators
-				.when(Criteria.where("durationInSeconds").gt(2.5).lte(5)).then("2.5-5").otherwise("Unknown");
-		ConditionalOperators.Cond durationRange5To10 = ConditionalOperators
-				.when(Criteria.where("durationInSeconds").gt(5).lte(10)).then("5-10").otherwise("Unknown");
-		ConditionalOperators.Cond durationRange10To15 = ConditionalOperators
-				.when(Criteria.where("durationInSeconds").gt(10).lte(15)).then("10-15").otherwise("Unknown");
-		ConditionalOperators.Cond durationRange15To20 = ConditionalOperators
-				.when(Criteria.where("durationInSeconds").gt(15).lte(20)).then("15-20").otherwise("Unknown");
-		ConditionalOperators.Cond durationRange20To25 = ConditionalOperators
-				.when(Criteria.where("durationInSeconds").gt(20).lte(25)).then("20-25").otherwise("Unknown");
-		ConditionalOperators.Cond durationRange25To30 = ConditionalOperators
-				.when(Criteria.where("durationInSeconds").gt(25).lte(30)).then("25-30").otherwise("Unknown");
-		ConditionalOperators.Cond durationRangeGreaterThan30 = ConditionalOperators
-				.when(Criteria.where("durationInSeconds").gt(30)).then(">30").otherwise("Unknown");
+		List<SoapTransaction> results = mongoTemplate.find(query, SoapTransaction.class);
 
-		// Group by duration range and calculate statistics
-		GroupOperation groupOperation = Aggregation.group("durationRange").count().as("interactions")
-				.sum("durationInSeconds").as("totalDuration").avg("durationInSeconds").as("avgDuration");
+		// Extract responseTime from results and convert it to a List<String>
+		return results.stream().map(transaction -> transaction.getSoapResponse().getResponseTime())
+				.collect(Collectors.toList());
 
-		// Project operation to format the result
-		ProjectionOperation resultProjection = Aggregation.project().and("durationRange").as("durationRange")
-				.and("interactions").as("interactions").andExpression("(interactions / totalInteractions) * 100")
-				.as("percentageTotal").and("avgDuration").as("avgDuration");
-
-		// Sort operation to sort the results by duration range
-		SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Order.asc("durationRange")));
-
-		// Define the aggregation pipeline
-		Aggregation aggregation = Aggregation.newAggregation(matchOperation, projectOperation, groupOperation,
-				resultProjection, sortOperation);
-
-		// Execute the aggregation and get the result
-		AggregationResults<ReportStats> results = mongoTemplate.aggregate(aggregation, SoapTransaction.class,
-				ReportStats.class);
-
-		// Calculate total values
-		double totalInteractions = results.getMappedResults().stream().mapToLong(ReportStats::getInteractions).sum();
-		double totalAvgDuration = results.getMappedResults().stream().mapToDouble(ReportStats::getAvgDuration).average()
-				.orElse(0);
-
-		// Create a Total row
-		ReportStats totalRow = new ReportStats();
-		totalRow.setDurationRange("Total");
-		totalRow.setInteractions((long) totalInteractions);
-		totalRow.setPercentageTotal(100.0); // Set this value to 100 since it's the total
-		totalRow.setAvgDuration(totalAvgDuration);
-
-		// Add the Total row to the result
-		List<ReportStats> resultWithTotal = new ArrayList<>(results.getMappedResults());
-		resultWithTotal.add(totalRow);
-
-		return resultWithTotal;
 	}
+
 }

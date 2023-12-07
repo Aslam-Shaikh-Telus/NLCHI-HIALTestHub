@@ -50,11 +50,8 @@ public class LoadTestResultController {
 	}
 
 	@GetMapping("/getReportStats")
-	private List<ReportStats> getAllReposnseTimeforReport(@RequestParam("startTestTime") String startTestTime,
+	private List<ReportStats> getAllReportStatsForReport(@RequestParam("startTestTime") String startTestTime,
 			@RequestParam("endTestTime") String endTestTime) {
-		LoadTestResult latestLoadTestResult = loadTestResultService.findTestResultByStartTime(startTestTime);
-		
-		// Check if the latestLoadTestResult is not null and return the allResponseTime
-		return latestLoadTestResult != null ? soapTransactionService.getAllResponseTime(startTestTime, endTestTime) : null;
+		return soapTransactionService.generateReportStats(startTestTime, endTestTime);
 	}
 }

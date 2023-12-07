@@ -3,18 +3,11 @@ package com.telushealth.hialtesthub.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReportStats {
-	@JsonProperty("Duration Range")
+	
 	private String durationRange;
-
-	@JsonProperty("Interactions")
 	private long interactions;
-
-	@JsonProperty("Percentage of Total")
 	private double percentageTotal;
-
-	@JsonProperty("Average Duration")
 	private double avgDuration;
 
 	public ReportStats() {
