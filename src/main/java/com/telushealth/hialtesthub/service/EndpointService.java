@@ -34,5 +34,9 @@ public class EndpointService {
 	public void saveEndpoint(Endpoint endpoint) {
  		endpointRepository.save(endpoint);
 	}
+	
+	public void saveEndpointToFile() {
+//		endpointRepository.saveToFile();
+	}
 
 }

@@ -83,6 +83,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>HialTestHub</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

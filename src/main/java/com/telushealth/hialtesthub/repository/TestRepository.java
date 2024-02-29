@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -28,14 +30,8 @@ public class TestRepository implements CommandLineRunner {
 	@Value("${testCase.json.file.path}")
 	private String testCaseJsonFile;
 
-	public List<TestCase> find() {
-		return mongoTemplate.findAll(TestCase.class);
-	}
-
-	public TestCase save(TestCase testCase) {
-		return mongoTemplate.save(testCase);
-
-	}
+	@Autowired
+	private ResourceLoader resourceLoader;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -43,7 +39,10 @@ public class TestRepository implements CommandLineRunner {
 		List<TestCase> testCases = null;
 		try {
 
-			ClassPathResource resource = new ClassPathResource(testCaseJsonFile);
+//			
+//			ClassPathResource resource = new ClassPathResource(testCaseJsonFile);
+			Resource resource = resourceLoader.getResource("file:" + testCaseJsonFile);
+
 			testCases = objectMapper.readValue(resource.getInputStream(), new TypeReference<List<TestCase>>() {
 			});
 		} catch (IOException e) {
@@ -52,6 +51,15 @@ public class TestRepository implements CommandLineRunner {
 
 		// Insert data into MongoDB
 		mongoTemplate.insertAll(testCases);
+	}
+
+	public List<TestCase> find() {
+		return mongoTemplate.findAll(TestCase.class);
+	}
+
+	public TestCase save(TestCase testCase) {
+		return mongoTemplate.save(testCase);
+
 	}
 
 	public TestCase findByInteractionId(String interactionId) {

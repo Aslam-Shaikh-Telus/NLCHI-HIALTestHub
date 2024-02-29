@@ -21,7 +21,7 @@
 						Support
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<li><a class="dropdown-item" href="#">Endpoint</a></li>
+						<li><a class="dropdown-item" href="/endpoint">Endpoint</a></li>
 						<li><a class="dropdown-item" href="#">Test cases</a></li>
 						<li>
 							<hr class="dropdown-divider">
@@ -31,7 +31,7 @@
 				</li>
 			</ul>
 			<form class="d-flex flex-row">
-				<span class="navbar-text p-2 flex-grow-1" id="usernameEndpoint">username@endpointIP</span>
+				<a class="navbar-text p-2 fw-normal fst-italic" id="usernameEndpoint" th:href="@{/endpoint}">username@endpointIP</a>
 				<a class="p-2 btn btn-sm btn-outline-danger" type="reset" th:href="@{/logout}">Log Out</a>
 			</form>
 		</div>

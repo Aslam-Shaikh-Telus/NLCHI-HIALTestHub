@@ -143,11 +143,6 @@
 						},
 						dataType: 'json',
 						success: function (loadTestResult) {
-							// Enable the Run button and disable the Stop button
-							$('#threads').prop('disabled', false);
-							$('#timelimit').prop('disabled', false);
-							$('#stopButton').prop('disabled', true);
-							$('#runButton').prop('disabled', false);
 
 							// Display the report stats table
 							$('#reportStatsContainer').show();
@@ -156,7 +151,16 @@
 							updateReportStats(loadTestResult.startTestTime, loadTestResult.endTestTime);
 
 							localStorage.setItem('loadTestRunning', false);
+
+
+							// Enable the Run button and disable the Stop button
+							$('#threads').prop('disabled', false);
+							$('#timelimit').prop('disabled', false);
+							$('#stopButton').prop('disabled', true);
+							$('#runButton').prop('disabled', false);
+
 							console.log('Load test finished successfully:', updateTable(loadTestResult));
+
 						},
 					});
 
@@ -215,15 +219,19 @@
 				url: '/api/runtest/loadtest/stop',
 				method: 'GET',
 				success: function () {
+					// Display the report stats table
+					$('#reportStatsContainer').show();
+
+					// Fetch and display report stats
+					updateReportStats(localStorage.getItem(startTime), localStorage.getItem(loadTestResult.endTestTime));
+
+					localStorage.setItem('loadTestRunning', false);
+
 					// Enable the Run button and disable the Stop button
 					$('#threads').prop('disabled', false);
 					$('#timelimit').prop('disabled', false);
 					$('#stopButton').prop('disabled', true);
 					$('#runButton').prop('disabled', false);
-
-					// Clear localStorage when the test is stopped
-					localStorage.setItem('loadTestRunning', false);
-					//localStorage.removeItem('startTime');
 
 					console.log('Load test stopped successfully.');
 				},

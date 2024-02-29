@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<!-- Console Appender for the root logger -->
+    <appender name="ConsoleAppender"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d %level [%t] [%c{1.}] %m%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- Appender for server.log -->
+    <appender
+		name="ServerLogAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/server.log</file>
+		<encoder>
+			<pattern>%d %level [%t] [%c{1.}] %m%n</pattern>
+		</encoder>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>logs/server.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+		</rollingPolicy>
+	</appender>
+
+	<!-- Appender for hialtest.log -->
+    <appender
+		name="HialtestLogAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/hialtest.log</file>
+		<encoder>
+			<pattern>%d %level [%t] [%c{1.}] %m%n</pattern>
+		</encoder>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>logs/hialtest.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+		</rollingPolicy>
+	</appender>
+
+	<!--     Logger for root (server.log) -->
+    <logger
+		name="org.springframework.boot" level="INFO" additivity="false">
+		<appender-ref ref="ServerLogAppender" />
+	</logger>
+
+	<!--     Logger for com.telushealth.hialtesthub.entity (hialtest.log) -->
+    <logger
+		name="com.telushealth.hialtesthub.entity" level="TRACE"
+		additivity="false">
+		<appender-ref ref="HialtestLogAppender" />
+	</logger> 
+	
+	<!--	Root logger configuration -->
+	<root level="INFO">
+		<appender-ref ref="ConsoleAppender" />
+		<appender-ref ref="ServerLogAppender" />
+	</root>
+
+</configuration>

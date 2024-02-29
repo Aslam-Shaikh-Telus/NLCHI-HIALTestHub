@@ -34,4 +34,8 @@ public class EndpointController {
 		endpointService.saveEndpoint(endpoint);
 	}
 
+	@PostMapping("/saveToFile")
+	public void saveEndpointToFile() {
+		endpointService.saveEndpointToFile();
+	}
 }

@@ -1,0 +1,722 @@
+2024-02-28 15:15:02,785 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Generating SOAP Request
+2024-02-28 15:15:02,852 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Imported SOAP XML from testCase:
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Header>
+    <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" soap:mustUnderstand="1">
+      <wsse:UsernameToken wsu:Id="UsernameToken-501107890">
+        <wsse:Username>ehipTester</wsse:Username>
+        <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">LlEGd3JqDF6VvzORnjwwIGAupbc=</wsse:Password>
+      </wsse:UsernameToken>
+      <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-1122606666">
+        <ds:SignedInfo>
+          <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:CanonicalizationMethod>
+          <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"></ds:SignatureMethod>
+          <ds:Reference URI="#id-369049246">
+            <ds:Transforms>
+              <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:Transform>
+            </ds:Transforms>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></ds:DigestMethod>
+            <ds:DigestValue></ds:DigestValue>
+          </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue></ds:SignatureValue>
+        <ds:KeyInfo Id="KeyId-1820383114">
+          <wsse:SecurityTokenReference wsu:Id="STRId-1645547422">
+            <wsse:Reference URI="#UsernameToken-501107890" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#UsernameToken"></wsse:Reference>
+          </wsse:SecurityTokenReference>
+        </ds:KeyInfo>
+      </ds:Signature>
+      <xenc:ReferenceList></xenc:ReferenceList>
+      <ehr:EHRRole xmlns:ehr="http://emergis.com/PNP-1.0.xsd">Pharmacist</ehr:EHRRole>
+    </wsse:Security>
+    <wsa:Action xmlns:wsa="http://www.w3.org/2005/08/addressing">PORX_IN060350CA.LE20080203</wsa:Action>
+    <wsa:From>
+      <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+    </wsa:From>
+    <wsa:MessageID>${#TestCase#MSG_ID}</wsa:MessageID>
+    <wsa:ReplyTo>
+      <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+    </wsa:ReplyTo>
+    <language>en</language>
+  </soap:Header>
+  <soap:Body wsu:Id="#id-369049246">
+    <PORX_IN060350CA xmlns="urn:hl7-org:v3" ITSVersion="XML_1.0">
+      <id root="${#TestCase#MSG_ID}"></id>
+      <creationTime value="20170506173232.0726-0400"></creationTime>
+      <versionCode code="V3-2003-12"></versionCode>
+      <interactionId extension="PORX_IN060350CA" root="2.16.840.1.113883.1.6"></interactionId>
+      <profileId extension="DRUG-00001" root="2.16.840.1.113883.3.133.3.100"></profileId>
+      <processingCode code="T"></processingCode>
+      <processingModeCode code="T"></processingModeCode>
+      <acceptAckCode code="NE"></acceptAckCode>
+      <receiver typeCode="RCV">
+        <telecom value="ftp://main.hospital.com/drugs"></telecom>
+        <device classCode="DEV" determinerCode="INSTANCE">
+          <id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.30.101"></id>
+        </device>
+      </receiver>
+      <sender typeCode="SND">
+        <telecom value="http://www.w3.org/2005/08/addressing/"></telecom>
+        <device classCode="DEV" determinerCode="INSTANCE">
+          <id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.3"></id>
+          <name>NLPRSCLNT</name>
+          <manufacturerModelName>1.1</manufacturerModelName>
+        </device>
+      </sender>
+      <controlActEvent classCode="CACT" moodCode="EVN">
+        <id root="${#TestCase#MSG_ID}"></id>
+        <code code="PORX_TE060260UV" codeSystem="2.16.840.1.113883.5.4">
+          <originalText>Medication profile detail generic query</originalText>
+        </code>
+        <statusCode code="completed"></statusCode>
+        <author contextControlCode="AP" typeCode="AUT">
+          <time value="20080331155857.8620-0400"></time>
+          <modeCode code="ELECTRONIC" codeSystem="2.16.840.1.113883.5.1064">
+            <originalText>electronic data</originalText>
+          </modeCode>
+          <assignedPerson classCode="ASSIGNED">
+            <id extension="324558" root="2.16.840.1.113883.4.261"></id>
+            <code code="PHARM" codeSystem="2.16.840.1.113883.5.111">
+              <originalText>pharmacist</originalText>
+            </code>
+            <representedPerson classCode="PSN" determinerCode="INSTANCE">
+              <name use="L">
+                QAPTEHIPONE QAPTEHIPLASTONE
+                <family>QAPTEHIPLASTONE</family>
+                <prefix>Mr.</prefix>
+              </name>
+              <asLicensedEntity classCode="LIC">
+                <id extension="324558" root="2.16.840.1.113883.4.261"></id>
+              </asLicensedEntity>
+            </representedPerson>
+          </assignedPerson>
+        </author>
+        <dataEnterer contextControlCode="AP" typeCode="ENT">
+          <assignedPerson classCode="ASSIGNED">
+            <id extension="ehipTester" root="2.16.840.1.113883.3.133.1.60.102"></id>
+            <code code="PHARM" codeSystem="2.16.840.1.113883.5.111">
+              <originalText>pharmacist</originalText>
+            </code>
+            <representedPerson classCode="PSN" determinerCode="INSTANCE">
+              <name use="L">
+                QAPTEHIPTWO QAPTEHIPLASTTWO
+                <family>QAPTEHIPLASTTWO</family>
+                <prefix>Mr.</prefix>
+              </name>
+              <asLicensedEntity classCode="LIC">
+                <id extension="324558" root="2.16.840.1.113883.4.261"></id>
+              </asLicensedEntity>
+            </representedPerson>
+          </assignedPerson>
+        </dataEnterer>
+        <location contextControlCode="AP" typeCode="LOC">
+          <serviceDeliveryLocation classCode="SDLOC">
+            <id extension="NL" root="2.16.840.1.113883.4.267"></id>
+            <addr use="WP">
+              <country>CA</country>
+              <state>NL</state>
+              <city>Corner Brook</city>
+              <postalCode>A1A 1A1</postalCode>
+            </addr>
+            <telecom use="WP" value="tel:+1-709-555-1212"></telecom>
+            <location classCode="PLC" determinerCode="INSTANCE">
+              <name>Test Location 1A</name>
+            </location>
+          </serviceDeliveryLocation>
+        </location>
+        <dataEntryLocation contextControlCode="AP" typeCode="ELOC">
+          <serviceDeliveryLocation classCode="SDLOC">
+            <id extension="NL" root="2.16.840.1.113883.4.267"></id>
+            <addr use="WP">
+              <country>CA</country>
+              <state>NL</state>
+              <city>Corner Brook</city>
+              <postalCode>A1A 1A1</postalCode>
+            </addr>
+            <telecom use="WP" value="tel:+1-709-555-1212"></telecom>
+            <location classCode="PLC" determinerCode="INSTANCE">
+              <name>Test Location 1A</name>
+            </location>
+          </serviceDeliveryLocation>
+        </dataEntryLocation>
+        <queryByParameter>
+          <queryId root="${#TestCase#queryid}"></queryId>
+          <parameterList>
+            <includeEventHistoryIndicator>
+              <value value="true"></value>
+            </includeEventHistoryIndicator>
+            <includeIssuesIndicator>
+              <value value="true"></value>
+            </includeIssuesIndicator>
+            <includeNotesIndicator>
+              <value value="true"></value>
+            </includeNotesIndicator>
+            <includePendingChangesIndicator>
+              <value value="true"></value>
+            </includePendingChangesIndicator>
+            <issueFilterCode>
+              <value code="U" codeSystem="2.16.840.1.113883.5.1096">
+                <originalText>with unmanaged issues</originalText>
+              </value>
+            </issueFilterCode>
+            <mostRecentByDrugIndicator>
+              <value value="true"></value>
+            </mostRecentByDrugIndicator>
+            <mostRecentDispenseForEachRxIndicator>
+              <value value="true"></value>
+            </mostRecentDispenseForEachRxIndicator>
+            <patientBirthDate>
+              <value value="19851205"></value>
+            </patientBirthDate>
+            <patientGender>
+              <value code="M" codeSystem="2.16.840.1.113883.5.1">
+                <originalText>Male</originalText>
+              </value>
+            </patientGender>
+            <patientID>
+              <value extension="429632253424" root="2.16.840.1.113883.4.52"></value>
+            </patientID>
+            <patientName>
+              <value use="L">
+                BRANDON ANGUS HUMBER
+                <family>HUMBER</family>
+                <prefix>Mr.</prefix>
+              </value>
+            </patientName>
+            <prescriptionOrderNumber>
+              <value></value>
+            </prescriptionOrderNumber>
+          </parameterList>
+        </queryByParameter>
+      </controlActEvent>
+    </PORX_IN060350CA>
+  </soap:Body>
+</soap:Envelope>
+
+2024-02-28 15:15:02,852 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Generate Digest Password
+2024-02-28 15:15:02,854 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Password Digest: LlEGd3JqDF6VvzORnjwwIGAupbc=
+2024-02-28 15:15:02,854 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Generate Digest Password
+2024-02-28 15:15:02,860 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | SoapXML with updated msgId, queryId, username, and password:
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Header>
+    <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" soap:mustUnderstand="1">
+      <wsse:UsernameToken wsu:Id="UsernameToken-501107890">
+        <wsse:Username>ehipTester</wsse:Username>
+        <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">LlEGd3JqDF6VvzORnjwwIGAupbc=</wsse:Password>
+      </wsse:UsernameToken>
+      <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-1122606666">
+        <ds:SignedInfo>
+          <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:CanonicalizationMethod>
+          <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"></ds:SignatureMethod>
+          <ds:Reference URI="#id-369049246">
+            <ds:Transforms>
+              <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:Transform>
+            </ds:Transforms>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></ds:DigestMethod>
+            <ds:DigestValue></ds:DigestValue>
+          </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue></ds:SignatureValue>
+        <ds:KeyInfo Id="KeyId-1820383114">
+          <wsse:SecurityTokenReference wsu:Id="STRId-1645547422">
+            <wsse:Reference URI="#UsernameToken-501107890" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#UsernameToken"></wsse:Reference>
+          </wsse:SecurityTokenReference>
+        </ds:KeyInfo>
+      </ds:Signature>
+      <xenc:ReferenceList></xenc:ReferenceList>
+      <ehr:EHRRole xmlns:ehr="http://emergis.com/PNP-1.0.xsd">Pharmacist</ehr:EHRRole>
+    </wsse:Security>
+    <wsa:Action xmlns:wsa="http://www.w3.org/2005/08/addressing">PORX_IN060350CA.LE20080203</wsa:Action>
+    <wsa:From>
+      <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+    </wsa:From>
+    <wsa:MessageID>718FB2E0-FED2-4B23-A8B3-432B022AE506</wsa:MessageID>
+    <wsa:ReplyTo>
+      <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+    </wsa:ReplyTo>
+    <language>en</language>
+  </soap:Header>
+  <soap:Body wsu:Id="#id-369049246">
+    <PORX_IN060350CA xmlns="urn:hl7-org:v3" ITSVersion="XML_1.0">
+      <id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"></id>
+      <creationTime value="20170506173232.0726-0400"></creationTime>
+      <versionCode code="V3-2003-12"></versionCode>
+      <interactionId extension="PORX_IN060350CA" root="2.16.840.1.113883.1.6"></interactionId>
+      <profileId extension="DRUG-00001" root="2.16.840.1.113883.3.133.3.100"></profileId>
+      <processingCode code="T"></processingCode>
+      <processingModeCode code="T"></processingModeCode>
+      <acceptAckCode code="NE"></acceptAckCode>
+      <receiver typeCode="RCV">
+        <telecom value="ftp://main.hospital.com/drugs"></telecom>
+        <device classCode="DEV" determinerCode="INSTANCE">
+          <id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.30.101"></id>
+        </device>
+      </receiver>
+      <sender typeCode="SND">
+        <telecom value="http://www.w3.org/2005/08/addressing/"></telecom>
+        <device classCode="DEV" determinerCode="INSTANCE">
+          <id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.3"></id>
+          <name>NLPRSCLNT</name>
+          <manufacturerModelName>1.1</manufacturerModelName>
+        </device>
+      </sender>
+      <controlActEvent classCode="CACT" moodCode="EVN">
+        <id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"></id>
+        <code code="PORX_TE060260UV" codeSystem="2.16.840.1.113883.5.4">
+          <originalText>Medication profile detail generic query</originalText>
+        </code>
+        <statusCode code="completed"></statusCode>
+        <author contextControlCode="AP" typeCode="AUT">
+          <time value="20080331155857.8620-0400"></time>
+          <modeCode code="ELECTRONIC" codeSystem="2.16.840.1.113883.5.1064">
+            <originalText>electronic data</originalText>
+          </modeCode>
+          <assignedPerson classCode="ASSIGNED">
+            <id extension="324558" root="2.16.840.1.113883.4.261"></id>
+            <code code="PHARM" codeSystem="2.16.840.1.113883.5.111">
+              <originalText>pharmacist</originalText>
+            </code>
+            <representedPerson classCode="PSN" determinerCode="INSTANCE">
+              <name use="L">
+                QAPTEHIPONE QAPTEHIPLASTONE
+                <family>QAPTEHIPLASTONE</family>
+                <prefix>Mr.</prefix>
+              </name>
+              <asLicensedEntity classCode="LIC">
+                <id extension="324558" root="2.16.840.1.113883.4.261"></id>
+              </asLicensedEntity>
+            </representedPerson>
+          </assignedPerson>
+        </author>
+        <dataEnterer contextControlCode="AP" typeCode="ENT">
+          <assignedPerson classCode="ASSIGNED">
+            <id extension="ehipTester" root="2.16.840.1.113883.3.133.1.60.102"></id>
+            <code code="PHARM" codeSystem="2.16.840.1.113883.5.111">
+              <originalText>pharmacist</originalText>
+            </code>
+            <representedPerson classCode="PSN" determinerCode="INSTANCE">
+              <name use="L">
+                QAPTEHIPTWO QAPTEHIPLASTTWO
+                <family>QAPTEHIPLASTTWO</family>
+                <prefix>Mr.</prefix>
+              </name>
+              <asLicensedEntity classCode="LIC">
+                <id extension="324558" root="2.16.840.1.113883.4.261"></id>
+              </asLicensedEntity>
+            </representedPerson>
+          </assignedPerson>
+        </dataEnterer>
+        <location contextControlCode="AP" typeCode="LOC">
+          <serviceDeliveryLocation classCode="SDLOC">
+            <id extension="NL" root="2.16.840.1.113883.4.267"></id>
+            <addr use="WP">
+              <country>CA</country>
+              <state>NL</state>
+              <city>Corner Brook</city>
+              <postalCode>A1A 1A1</postalCode>
+            </addr>
+            <telecom use="WP" value="tel:+1-709-555-1212"></telecom>
+            <location classCode="PLC" determinerCode="INSTANCE">
+              <name>Test Location 1A</name>
+            </location>
+          </serviceDeliveryLocation>
+        </location>
+        <dataEntryLocation contextControlCode="AP" typeCode="ELOC">
+          <serviceDeliveryLocation classCode="SDLOC">
+            <id extension="NL" root="2.16.840.1.113883.4.267"></id>
+            <addr use="WP">
+              <country>CA</country>
+              <state>NL</state>
+              <city>Corner Brook</city>
+              <postalCode>A1A 1A1</postalCode>
+            </addr>
+            <telecom use="WP" value="tel:+1-709-555-1212"></telecom>
+            <location classCode="PLC" determinerCode="INSTANCE">
+              <name>Test Location 1A</name>
+            </location>
+          </serviceDeliveryLocation>
+        </dataEntryLocation>
+        <queryByParameter>
+          <queryId root="2BF86C33-468D-43E9-8DD7-4B05AFACC31D"></queryId>
+          <parameterList>
+            <includeEventHistoryIndicator>
+              <value value="true"></value>
+            </includeEventHistoryIndicator>
+            <includeIssuesIndicator>
+              <value value="true"></value>
+            </includeIssuesIndicator>
+            <includeNotesIndicator>
+              <value value="true"></value>
+            </includeNotesIndicator>
+            <includePendingChangesIndicator>
+              <value value="true"></value>
+            </includePendingChangesIndicator>
+            <issueFilterCode>
+              <value code="U" codeSystem="2.16.840.1.113883.5.1096">
+                <originalText>with unmanaged issues</originalText>
+              </value>
+            </issueFilterCode>
+            <mostRecentByDrugIndicator>
+              <value value="true"></value>
+            </mostRecentByDrugIndicator>
+            <mostRecentDispenseForEachRxIndicator>
+              <value value="true"></value>
+            </mostRecentDispenseForEachRxIndicator>
+            <patientBirthDate>
+              <value value="19851205"></value>
+            </patientBirthDate>
+            <patientGender>
+              <value code="M" codeSystem="2.16.840.1.113883.5.1">
+                <originalText>Male</originalText>
+              </value>
+            </patientGender>
+            <patientID>
+              <value extension="429632253424" root="2.16.840.1.113883.4.52"></value>
+            </patientID>
+            <patientName>
+              <value use="L">
+                BRANDON ANGUS HUMBER
+                <family>HUMBER</family>
+                <prefix>Mr.</prefix>
+              </value>
+            </patientName>
+            <prescriptionOrderNumber>
+              <value></value>
+            </prescriptionOrderNumber>
+          </parameterList>
+        </queryByParameter>
+      </controlActEvent>
+    </PORX_IN060350CA>
+  </soap:Body>
+</soap:Envelope>
+
+2024-02-28 15:15:02,868 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Extracted SOAP Body:
+<soap:Body xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="#id-369049246" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><PORX_IN060350CA xmlns="urn:hl7-org:v3" ITSVersion="XML_1.0"><id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"/><creationTime value="20170506173232.0726-0400"/><versionCode code="V3-2003-12"/><interactionId extension="PORX_IN060350CA" root="2.16.840.1.113883.1.6"/><profileId extension="DRUG-00001" root="2.16.840.1.113883.3.133.3.100"/><processingCode code="T"/><processingModeCode code="T"/><acceptAckCode code="NE"/><receiver typeCode="RCV"><telecom value="ftp://main.hospital.com/drugs"/><device classCode="DEV" determinerCode="INSTANCE"><id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.30.101"/></device></receiver><sender typeCode="SND"><telecom value="http://www.w3.org/2005/08/addressing/"/><device classCode="DEV" determinerCode="INSTANCE"><id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.3"/><name>NLPRSCLNT</name><manufacturerModelName>1.1</manufacturerModelName></device></sender><controlActEvent classCode="CACT" moodCode="EVN"><id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"/><code code="PORX_TE060260UV" codeSystem="2.16.840.1.113883.5.4"><originalText>Medication profile detail generic query</originalText></code><statusCode code="completed"/><author contextControlCode="AP" typeCode="AUT"><time value="20080331155857.8620-0400"/><modeCode code="ELECTRONIC" codeSystem="2.16.840.1.113883.5.1064"><originalText>electronic data</originalText></modeCode><assignedPerson classCode="ASSIGNED"><id extension="324558" root="2.16.840.1.113883.4.261"/><code code="PHARM" codeSystem="2.16.840.1.113883.5.111"><originalText>pharmacist</originalText></code><representedPerson classCode="PSN" determinerCode="INSTANCE"><name use="L">QAPTEHIPONE QAPTEHIPLASTONE<family>QAPTEHIPLASTONE</family><prefix>Mr.</prefix></name><asLicensedEntity classCode="LIC"><id extension="324558" root="2.16.840.1.113883.4.261"/></asLicensedEntity></representedPerson></assignedPerson></author><dataEnterer contextControlCode="AP" typeCode="ENT"><assignedPerson classCode="ASSIGNED"><id extension="ehipTester" root="2.16.840.1.113883.3.133.1.60.102"/><code code="PHARM" codeSystem="2.16.840.1.113883.5.111"><originalText>pharmacist</originalText></code><representedPerson classCode="PSN" determinerCode="INSTANCE"><name use="L">QAPTEHIPTWO QAPTEHIPLASTTWO<family>QAPTEHIPLASTTWO</family><prefix>Mr.</prefix></name><asLicensedEntity classCode="LIC"><id extension="324558" root="2.16.840.1.113883.4.261"/></asLicensedEntity></representedPerson></assignedPerson></dataEnterer><location contextControlCode="AP" typeCode="LOC"><serviceDeliveryLocation classCode="SDLOC"><id extension="NL" root="2.16.840.1.113883.4.267"/><addr use="WP"><country>CA</country><state>NL</state><city>Corner Brook</city><postalCode>A1A 1A1</postalCode></addr><telecom use="WP" value="tel:+1-709-555-1212"/><location classCode="PLC" determinerCode="INSTANCE"><name>Test Location 1A</name></location></serviceDeliveryLocation></location><dataEntryLocation contextControlCode="AP" typeCode="ELOC"><serviceDeliveryLocation classCode="SDLOC"><id extension="NL" root="2.16.840.1.113883.4.267"/><addr use="WP"><country>CA</country><state>NL</state><city>Corner Brook</city><postalCode>A1A 1A1</postalCode></addr><telecom use="WP" value="tel:+1-709-555-1212"/><location classCode="PLC" determinerCode="INSTANCE"><name>Test Location 1A</name></location></serviceDeliveryLocation></dataEntryLocation><queryByParameter><queryId root="2BF86C33-468D-43E9-8DD7-4B05AFACC31D"/><parameterList><includeEventHistoryIndicator><value value="true"/></includeEventHistoryIndicator><includeIssuesIndicator><value value="true"/></includeIssuesIndicator><includeNotesIndicator><value value="true"/></includeNotesIndicator><includePendingChangesIndicator><value value="true"/></includePendingChangesIndicator><issueFilterCode><value code="U" codeSystem="2.16.840.1.113883.5.1096"><originalText>with unmanaged issues</originalText></value></issueFilterCode><mostRecentByDrugIndicator><value value="true"/></mostRecentByDrugIndicator><mostRecentDispenseForEachRxIndicator><value value="true"/></mostRecentDispenseForEachRxIndicator><patientBirthDate><value value="19851205"/></patientBirthDate><patientGender><value code="M" codeSystem="2.16.840.1.113883.5.1"><originalText>Male</originalText></value></patientGender><patientID><value extension="429632253424" root="2.16.840.1.113883.4.52"/></patientID><patientName><value use="L">BRANDON ANGUS HUMBER<family>HUMBER</family><prefix>Mr.</prefix></value></patientName><prescriptionOrderNumber><value/></prescriptionOrderNumber></parameterList></queryByParameter></controlActEvent></PORX_IN060350CA></soap:Body>
+2024-02-28 15:15:02,870 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLDigest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Generating SOAP Digest Value
+2024-02-28 15:15:02,910 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLDigest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Canonical Body: <soap:Body xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="#id-369049246"><PORX_IN060350CA xmlns="urn:hl7-org:v3" ITSVersion="XML_1.0"><id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"></id><creationTime value="20170506173232.0726-0400"></creationTime><versionCode code="V3-2003-12"></versionCode><interactionId extension="PORX_IN060350CA" root="2.16.840.1.113883.1.6"></interactionId><profileId extension="DRUG-00001" root="2.16.840.1.113883.3.133.3.100"></profileId><processingCode code="T"></processingCode><processingModeCode code="T"></processingModeCode><acceptAckCode code="NE"></acceptAckCode><receiver typeCode="RCV"><telecom value="ftp://main.hospital.com/drugs"></telecom><device classCode="DEV" determinerCode="INSTANCE"><id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.30.101"></id></device></receiver><sender typeCode="SND"><telecom value="http://www.w3.org/2005/08/addressing/"></telecom><device classCode="DEV" determinerCode="INSTANCE"><id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.3"></id><name>NLPRSCLNT</name><manufacturerModelName>1.1</manufacturerModelName></device></sender><controlActEvent classCode="CACT" moodCode="EVN"><id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"></id><code code="PORX_TE060260UV" codeSystem="2.16.840.1.113883.5.4"><originalText>Medication profile detail generic query</originalText></code><statusCode code="completed"></statusCode><author contextControlCode="AP" typeCode="AUT"><time value="20080331155857.8620-0400"></time><modeCode code="ELECTRONIC" codeSystem="2.16.840.1.113883.5.1064"><originalText>electronic data</originalText></modeCode><assignedPerson classCode="ASSIGNED"><id extension="324558" root="2.16.840.1.113883.4.261"></id><code code="PHARM" codeSystem="2.16.840.1.113883.5.111"><originalText>pharmacist</originalText></code><representedPerson classCode="PSN" determinerCode="INSTANCE"><name use="L">QAPTEHIPONE QAPTEHIPLASTONE<family>QAPTEHIPLASTONE</family><prefix>Mr.</prefix></name><asLicensedEntity classCode="LIC"><id extension="324558" root="2.16.840.1.113883.4.261"></id></asLicensedEntity></representedPerson></assignedPerson></author><dataEnterer contextControlCode="AP" typeCode="ENT"><assignedPerson classCode="ASSIGNED"><id extension="ehipTester" root="2.16.840.1.113883.3.133.1.60.102"></id><code code="PHARM" codeSystem="2.16.840.1.113883.5.111"><originalText>pharmacist</originalText></code><representedPerson classCode="PSN" determinerCode="INSTANCE"><name use="L">QAPTEHIPTWO QAPTEHIPLASTTWO<family>QAPTEHIPLASTTWO</family><prefix>Mr.</prefix></name><asLicensedEntity classCode="LIC"><id extension="324558" root="2.16.840.1.113883.4.261"></id></asLicensedEntity></representedPerson></assignedPerson></dataEnterer><location contextControlCode="AP" typeCode="LOC"><serviceDeliveryLocation classCode="SDLOC"><id extension="NL" root="2.16.840.1.113883.4.267"></id><addr use="WP"><country>CA</country><state>NL</state><city>Corner Brook</city><postalCode>A1A 1A1</postalCode></addr><telecom use="WP" value="tel:+1-709-555-1212"></telecom><location classCode="PLC" determinerCode="INSTANCE"><name>Test Location 1A</name></location></serviceDeliveryLocation></location><dataEntryLocation contextControlCode="AP" typeCode="ELOC"><serviceDeliveryLocation classCode="SDLOC"><id extension="NL" root="2.16.840.1.113883.4.267"></id><addr use="WP"><country>CA</country><state>NL</state><city>Corner Brook</city><postalCode>A1A 1A1</postalCode></addr><telecom use="WP" value="tel:+1-709-555-1212"></telecom><location classCode="PLC" determinerCode="INSTANCE"><name>Test Location 1A</name></location></serviceDeliveryLocation></dataEntryLocation><queryByParameter><queryId root="2BF86C33-468D-43E9-8DD7-4B05AFACC31D"></queryId><parameterList><includeEventHistoryIndicator><value value="true"></value></includeEventHistoryIndicator><includeIssuesIndicator><value value="true"></value></includeIssuesIndicator><includeNotesIndicator><value value="true"></value></includeNotesIndicator><includePendingChangesIndicator><value value="true"></value></includePendingChangesIndicator><issueFilterCode><value code="U" codeSystem="2.16.840.1.113883.5.1096"><originalText>with unmanaged issues</originalText></value></issueFilterCode><mostRecentByDrugIndicator><value value="true"></value></mostRecentByDrugIndicator><mostRecentDispenseForEachRxIndicator><value value="true"></value></mostRecentDispenseForEachRxIndicator><patientBirthDate><value value="19851205"></value></patientBirthDate><patientGender><value code="M" codeSystem="2.16.840.1.113883.5.1"><originalText>Male</originalText></value></patientGender><patientID><value extension="429632253424" root="2.16.840.1.113883.4.52"></value></patientID><patientName><value use="L">BRANDON ANGUS HUMBER<family>HUMBER</family><prefix>Mr.</prefix></value></patientName><prescriptionOrderNumber><value></value></prescriptionOrderNumber></parameterList></queryByParameter></controlActEvent></PORX_IN060350CA></soap:Body>
+2024-02-28 15:15:02,911 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLDigest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Digest Value: qIzRwE4L1YkdkGPNFzhIbgzjfXg=
+2024-02-28 15:15:02,911 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLDigest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Generating SOAP Digest Value
+2024-02-28 15:15:02,913 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Updating SignedInfo with DigestValue
+2024-02-28 15:15:02,913 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Updating SignedInfo with DigestValue
+2024-02-28 15:15:02,915 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLSigner]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Signing Load Message
+2024-02-28 15:15:02,915 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLSigner]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Generating Key
+2024-02-28 15:15:02,915 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLSigner]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Key: n�����b�N���
+2024-02-28 15:15:02,915 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLSigner]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Generating Key
+2024-02-28 15:15:02,916 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLSigner]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | SignedInfo is :
+[60, 100, 115, 58, 83, 105, 103, 110, 101, 100, 73, 110, 102, 111, 32, 120, 109, 108, 110, 115, 58, 100, 115, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 119, 51, 46, 111, 114, 103, 47, 50, 48, 48, 48, 47, 48, 57, 47, 120, 109, 108, 100, 115, 105, 103, 35, 34, 62, 60, 100, 115, 58, 67, 97, 110, 111, 110, 105, 99, 97, 108, 105, 122, 97, 116, 105, 111, 110, 77, 101, 116, 104, 111, 100, 32, 65, 108, 103, 111, 114, 105, 116, 104, 109, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 119, 51, 46, 111, 114, 103, 47, 50, 48, 48, 49, 47, 49, 48, 47, 120, 109, 108, 45, 101, 120, 99, 45, 99, 49, 52, 110, 35, 34, 62, 60, 47, 100, 115, 58, 67, 97, 110, 111, 110, 105, 99, 97, 108, 105, 122, 97, 116, 105, 111, 110, 77, 101, 116, 104, 111, 100, 62, 60, 100, 115, 58, 83, 105, 103, 110, 97, 116, 117, 114, 101, 77, 101, 116, 104, 111, 100, 32, 65, 108, 103, 111, 114, 105, 116, 104, 109, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 119, 51, 46, 111, 114, 103, 47, 50, 48, 48, 48, 47, 48, 57, 47, 120, 109, 108, 100, 115, 105, 103, 35, 104, 109, 97, 99, 45, 115, 104, 97, 49, 34, 62, 60, 47, 100, 115, 58, 83, 105, 103, 110, 97, 116, 117, 114, 101, 77, 101, 116, 104, 111, 100, 62, 60, 100, 115, 58, 82, 101, 102, 101, 114, 101, 110, 99, 101, 32, 85, 82, 73, 61, 34, 35, 105, 100, 45, 51, 54, 57, 48, 52, 57, 50, 52, 54, 34, 62, 60, 100, 115, 58, 84, 114, 97, 110, 115, 102, 111, 114, 109, 115, 62, 60, 100, 115, 58, 84, 114, 97, 110, 115, 102, 111, 114, 109, 32, 65, 108, 103, 111, 114, 105, 116, 104, 109, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 119, 51, 46, 111, 114, 103, 47, 50, 48, 48, 49, 47, 49, 48, 47, 120, 109, 108, 45, 101, 120, 99, 45, 99, 49, 52, 110, 35, 34, 62, 60, 47, 100, 115, 58, 84, 114, 97, 110, 115, 102, 111, 114, 109, 62, 60, 47, 100, 115, 58, 84, 114, 97, 110, 115, 102, 111, 114, 109, 115, 62, 60, 100, 115, 58, 68, 105, 103, 101, 115, 116, 77, 101, 116, 104, 111, 100, 32, 65, 108, 103, 111, 114, 105, 116, 104, 109, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 119, 51, 46, 111, 114, 103, 47, 50, 48, 48, 48, 47, 48, 57, 47, 120, 109, 108, 100, 115, 105, 103, 35, 115, 104, 97, 49, 34, 62, 60, 47, 100, 115, 58, 68, 105, 103, 101, 115, 116, 77, 101, 116, 104, 111, 100, 62, 60, 100, 115, 58, 68, 105, 103, 101, 115, 116, 86, 97, 108, 117, 101, 62, 113, 73, 122, 82, 119, 69, 52, 76, 49, 89, 107, 100, 107, 71, 80, 78, 70, 122, 104, 73, 98, 103, 122, 106, 102, 88, 103, 61, 60, 47, 100, 115, 58, 68, 105, 103, 101, 115, 116, 86, 97, 108, 117, 101, 62, 60, 47, 100, 115, 58, 82, 101, 102, 101, 114, 101, 110, 99, 101, 62, 60, 47, 100, 115, 58, 83, 105, 103, 110, 101, 100, 73, 110, 102, 111, 62]
+2024-02-28 15:15:02,916 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLSigner]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Modified SignedInfo is :
+[60, 100, 115, 58, 83, 105, 103, 110, 101, 100, 73, 110, 102, 111, 32, 120, 109, 108, 110, 115, 58, 100, 115, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 119, 51, 46, 111, 114, 103, 47, 50, 48, 48, 48, 47, 48, 57, 47, 120, 109, 108, 100, 115, 105, 103, 35, 34, 62, 60, 100, 115, 58, 67, 97, 110, 111, 110, 105, 99, 97, 108, 105, 122, 97, 116, 105, 111, 110, 77, 101, 116, 104, 111, 100, 32, 65, 108, 103, 111, 114, 105, 116, 104, 109, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 119, 51, 46, 111, 114, 103, 47, 50, 48, 48, 49, 47, 49, 48, 47, 120, 109, 108, 45, 101, 120, 99, 45, 99, 49, 52, 110, 35, 34, 62, 60, 47, 100, 115, 58, 67, 97, 110, 111, 110, 105, 99, 97, 108, 105, 122, 97, 116, 105, 111, 110, 77, 101, 116, 104, 111, 100, 62, 60, 100, 115, 58, 83, 105, 103, 110, 97, 116, 117, 114, 101, 77, 101, 116, 104, 111, 100, 32, 65, 108, 103, 111, 114, 105, 116, 104, 109, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 119, 51, 46, 111, 114, 103, 47, 50, 48, 48, 48, 47, 48, 57, 47, 120, 109, 108, 100, 115, 105, 103, 35, 104, 109, 97, 99, 45, 115, 104, 97, 49, 34, 62, 60, 47, 100, 115, 58, 83, 105, 103, 110, 97, 116, 117, 114, 101, 77, 101, 116, 104, 111, 100, 62, 60, 100, 115, 58, 82, 101, 102, 101, 114, 101, 110, 99, 101, 32, 85, 82, 73, 61, 34, 35, 105, 100, 45, 51, 54, 57, 48, 52, 57, 50, 52, 54, 34, 62, 60, 100, 115, 58, 84, 114, 97, 110, 115, 102, 111, 114, 109, 115, 62, 60, 100, 115, 58, 84, 114, 97, 110, 115, 102, 111, 114, 109, 32, 65, 108, 103, 111, 114, 105, 116, 104, 109, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 119, 51, 46, 111, 114, 103, 47, 50, 48, 48, 49, 47, 49, 48, 47, 120, 109, 108, 45, 101, 120, 99, 45, 99, 49, 52, 110, 35, 34, 62, 60, 47, 100, 115, 58, 84, 114, 97, 110, 115, 102, 111, 114, 109, 62, 60, 47, 100, 115, 58, 84, 114, 97, 110, 115, 102, 111, 114, 109, 115, 62, 60, 100, 115, 58, 68, 105, 103, 101, 115, 116, 77, 101, 116, 104, 111, 100, 32, 65, 108, 103, 111, 114, 105, 116, 104, 109, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 119, 51, 46, 111, 114, 103, 47, 50, 48, 48, 48, 47, 48, 57, 47, 120, 109, 108, 100, 115, 105, 103, 35, 115, 104, 97, 49, 34, 62, 60, 47, 100, 115, 58, 68, 105, 103, 101, 115, 116, 77, 101, 116, 104, 111, 100, 62, 60, 100, 115, 58, 68, 105, 103, 101, 115, 116, 86, 97, 108, 117, 101, 62, 113, 73, 122, 82, 119, 69, 52, 76, 49, 89, 107, 100, 107, 71, 80, 78, 70, 122, 104, 73, 98, 103, 122, 106, 102, 88, 103, 61, 60, 47, 100, 115, 58, 68, 105, 103, 101, 115, 116, 86, 97, 108, 117, 101, 62, 60, 47, 100, 115, 58, 82, 101, 102, 101, 114, 101, 110, 99, 101, 62, 60, 47, 100, 115, 58, 83, 105, 103, 110, 101, 100, 73, 110, 102, 111, 62]
+2024-02-28 15:15:02,925 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLSigner]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Signature Value: 5l5RyPD2ACMfJxAqA98rCLRX1vY=
+2024-02-28 15:15:02,926 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.soaphandler.XMLSigner]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Signing Load Message
+2024-02-28 15:15:02,927 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | SOAP Message:
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soap:Header><wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" soap:mustUnderstand="1"><wsse:UsernameToken wsu:Id="UsernameToken-501107890"><wsse:Username>ehipTester</wsse:Username><wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">LlEGd3JqDF6VvzORnjwwIGAupbc=</wsse:Password></wsse:UsernameToken><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-1122606666"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/><ds:Reference URI="#id-369049246"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue/></ds:Reference></ds:SignedInfo><ds:SignatureValue/><ds:KeyInfo Id="KeyId-1820383114"><wsse:SecurityTokenReference wsu:Id="STRId-1645547422"><wsse:Reference URI="#UsernameToken-501107890" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#UsernameToken"/></wsse:SecurityTokenReference></ds:KeyInfo></ds:Signature><xenc:ReferenceList/><ehr:EHRRole xmlns:ehr="http://emergis.com/PNP-1.0.xsd">Pharmacist</ehr:EHRRole></wsse:Security><wsa:Action xmlns:wsa="http://www.w3.org/2005/08/addressing">PORX_IN060350CA.LE20080203</wsa:Action><wsa:From xmlns:wsa="http://www.w3.org/2005/08/addressing"><wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address></wsa:From><wsa:MessageID xmlns:wsa="http://www.w3.org/2005/08/addressing">718FB2E0-FED2-4B23-A8B3-432B022AE506</wsa:MessageID><wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing"><wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address></wsa:ReplyTo><language>en</language></soap:Header><soap:Body wsu:Id="#id-369049246"><PORX_IN060350CA xmlns="urn:hl7-org:v3" ITSVersion="XML_1.0"><id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"/><creationTime value="20170506173232.0726-0400"/><versionCode code="V3-2003-12"/><interactionId extension="PORX_IN060350CA" root="2.16.840.1.113883.1.6"/><profileId extension="DRUG-00001" root="2.16.840.1.113883.3.133.3.100"/><processingCode code="T"/><processingModeCode code="T"/><acceptAckCode code="NE"/><receiver typeCode="RCV"><telecom value="ftp://main.hospital.com/drugs"/><device classCode="DEV" determinerCode="INSTANCE"><id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.30.101"/></device></receiver><sender typeCode="SND"><telecom value="http://www.w3.org/2005/08/addressing/"/><device classCode="DEV" determinerCode="INSTANCE"><id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.3"/><name>NLPRSCLNT</name><manufacturerModelName>1.1</manufacturerModelName></device></sender><controlActEvent classCode="CACT" moodCode="EVN"><id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"/><code code="PORX_TE060260UV" codeSystem="2.16.840.1.113883.5.4"><originalText>Medication profile detail generic query</originalText></code><statusCode code="completed"/><author contextControlCode="AP" typeCode="AUT"><time value="20080331155857.8620-0400"/><modeCode code="ELECTRONIC" codeSystem="2.16.840.1.113883.5.1064"><originalText>electronic data</originalText></modeCode><assignedPerson classCode="ASSIGNED"><id extension="324558" root="2.16.840.1.113883.4.261"/><code code="PHARM" codeSystem="2.16.840.1.113883.5.111"><originalText>pharmacist</originalText></code><representedPerson classCode="PSN" determinerCode="INSTANCE"><name use="L">QAPTEHIPONE QAPTEHIPLASTONE<family>QAPTEHIPLASTONE</family><prefix>Mr.</prefix></name><asLicensedEntity classCode="LIC"><id extension="324558" root="2.16.840.1.113883.4.261"/></asLicensedEntity></representedPerson></assignedPerson></author><dataEnterer contextControlCode="AP" typeCode="ENT"><assignedPerson classCode="ASSIGNED"><id extension="ehipTester" root="2.16.840.1.113883.3.133.1.60.102"/><code code="PHARM" codeSystem="2.16.840.1.113883.5.111"><originalText>pharmacist</originalText></code><representedPerson classCode="PSN" determinerCode="INSTANCE"><name use="L">QAPTEHIPTWO QAPTEHIPLASTTWO<family>QAPTEHIPLASTTWO</family><prefix>Mr.</prefix></name><asLicensedEntity classCode="LIC"><id extension="324558" root="2.16.840.1.113883.4.261"/></asLicensedEntity></representedPerson></assignedPerson></dataEnterer><location contextControlCode="AP" typeCode="LOC"><serviceDeliveryLocation classCode="SDLOC"><id extension="NL" root="2.16.840.1.113883.4.267"/><addr use="WP"><country>CA</country><state>NL</state><city>Corner Brook</city><postalCode>A1A 1A1</postalCode></addr><telecom use="WP" value="tel:+1-709-555-1212"/><location classCode="PLC" determinerCode="INSTANCE"><name>Test Location 1A</name></location></serviceDeliveryLocation></location><dataEntryLocation contextControlCode="AP" typeCode="ELOC"><serviceDeliveryLocation classCode="SDLOC"><id extension="NL" root="2.16.840.1.113883.4.267"/><addr use="WP"><country>CA</country><state>NL</state><city>Corner Brook</city><postalCode>A1A 1A1</postalCode></addr><telecom use="WP" value="tel:+1-709-555-1212"/><location classCode="PLC" determinerCode="INSTANCE"><name>Test Location 1A</name></location></serviceDeliveryLocation></dataEntryLocation><queryByParameter><queryId root="2BF86C33-468D-43E9-8DD7-4B05AFACC31D"/><parameterList><includeEventHistoryIndicator><value value="true"/></includeEventHistoryIndicator><includeIssuesIndicator><value value="true"/></includeIssuesIndicator><includeNotesIndicator><value value="true"/></includeNotesIndicator><includePendingChangesIndicator><value value="true"/></includePendingChangesIndicator><issueFilterCode><value code="U" codeSystem="2.16.840.1.113883.5.1096"><originalText>with unmanaged issues</originalText></value></issueFilterCode><mostRecentByDrugIndicator><value value="true"/></mostRecentByDrugIndicator><mostRecentDispenseForEachRxIndicator><value value="true"/></mostRecentDispenseForEachRxIndicator><patientBirthDate><value value="19851205"/></patientBirthDate><patientGender><value code="M" codeSystem="2.16.840.1.113883.5.1"><originalText>Male</originalText></value></patientGender><patientID><value extension="429632253424" root="2.16.840.1.113883.4.52"/></patientID><patientName><value use="L">BRANDON ANGUS HUMBER<family>HUMBER</family><prefix>Mr.</prefix></value></patientName><prescriptionOrderNumber><value/></prescriptionOrderNumber></parameterList></queryByParameter></controlActEvent></PORX_IN060350CA></soap:Body></soap:Envelope>
+2024-02-28 15:15:02,927 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Updating SOAP Message with Canonical SOAP Body
+2024-02-28 15:15:02,928 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Updating SOAP Message with Canonical SOAP Body
+2024-02-28 15:15:02,928 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Updating SOAP Message with SignedInfo
+2024-02-28 15:15:02,929 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Updating SOAP Message with SignedInfo
+2024-02-28 15:15:02,930 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Final SOAP Request XML:
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soap:Header><wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" soap:mustUnderstand="1"><wsse:UsernameToken wsu:Id="UsernameToken-501107890"><wsse:Username>ehipTester</wsse:Username><wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">LlEGd3JqDF6VvzORnjwwIGAupbc=</wsse:Password></wsse:UsernameToken><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-1122606666"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/><ds:Reference URI="#id-369049246"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>qIzRwE4L1YkdkGPNFzhIbgzjfXg=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>5l5RyPD2ACMfJxAqA98rCLRX1vY=</ds:SignatureValue><ds:KeyInfo Id="KeyId-1820383114"><wsse:SecurityTokenReference wsu:Id="STRId-1645547422"><wsse:Reference URI="#UsernameToken-501107890" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#UsernameToken"/></wsse:SecurityTokenReference></ds:KeyInfo></ds:Signature><xenc:ReferenceList/><ehr:EHRRole xmlns:ehr="http://emergis.com/PNP-1.0.xsd">Pharmacist</ehr:EHRRole></wsse:Security><wsa:Action xmlns:wsa="http://www.w3.org/2005/08/addressing">PORX_IN060350CA.LE20080203</wsa:Action><wsa:From xmlns:wsa="http://www.w3.org/2005/08/addressing"><wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address></wsa:From><wsa:MessageID xmlns:wsa="http://www.w3.org/2005/08/addressing">718FB2E0-FED2-4B23-A8B3-432B022AE506</wsa:MessageID><wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing"><wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address></wsa:ReplyTo><language>en</language></soap:Header><soap:Body wsu:Id="#id-369049246"><PORX_IN060350CA xmlns="urn:hl7-org:v3" ITSVersion="XML_1.0"><id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"/><creationTime value="20170506173232.0726-0400"/><versionCode code="V3-2003-12"/><interactionId extension="PORX_IN060350CA" root="2.16.840.1.113883.1.6"/><profileId extension="DRUG-00001" root="2.16.840.1.113883.3.133.3.100"/><processingCode code="T"/><processingModeCode code="T"/><acceptAckCode code="NE"/><receiver typeCode="RCV"><telecom value="ftp://main.hospital.com/drugs"/><device classCode="DEV" determinerCode="INSTANCE"><id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.30.101"/></device></receiver><sender typeCode="SND"><telecom value="http://www.w3.org/2005/08/addressing/"/><device classCode="DEV" determinerCode="INSTANCE"><id extension="N2LPR0" root="2.16.840.1.113883.3.133.1.3"/><name>NLPRSCLNT</name><manufacturerModelName>1.1</manufacturerModelName></device></sender><controlActEvent classCode="CACT" moodCode="EVN"><id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"/><code code="PORX_TE060260UV" codeSystem="2.16.840.1.113883.5.4"><originalText>Medication profile detail generic query</originalText></code><statusCode code="completed"/><author contextControlCode="AP" typeCode="AUT"><time value="20080331155857.8620-0400"/><modeCode code="ELECTRONIC" codeSystem="2.16.840.1.113883.5.1064"><originalText>electronic data</originalText></modeCode><assignedPerson classCode="ASSIGNED"><id extension="324558" root="2.16.840.1.113883.4.261"/><code code="PHARM" codeSystem="2.16.840.1.113883.5.111"><originalText>pharmacist</originalText></code><representedPerson classCode="PSN" determinerCode="INSTANCE"><name use="L">QAPTEHIPONE QAPTEHIPLASTONE<family>QAPTEHIPLASTONE</family><prefix>Mr.</prefix></name><asLicensedEntity classCode="LIC"><id extension="324558" root="2.16.840.1.113883.4.261"/></asLicensedEntity></representedPerson></assignedPerson></author><dataEnterer contextControlCode="AP" typeCode="ENT"><assignedPerson classCode="ASSIGNED"><id extension="ehipTester" root="2.16.840.1.113883.3.133.1.60.102"/><code code="PHARM" codeSystem="2.16.840.1.113883.5.111"><originalText>pharmacist</originalText></code><representedPerson classCode="PSN" determinerCode="INSTANCE"><name use="L">QAPTEHIPTWO QAPTEHIPLASTTWO<family>QAPTEHIPLASTTWO</family><prefix>Mr.</prefix></name><asLicensedEntity classCode="LIC"><id extension="324558" root="2.16.840.1.113883.4.261"/></asLicensedEntity></representedPerson></assignedPerson></dataEnterer><location contextControlCode="AP" typeCode="LOC"><serviceDeliveryLocation classCode="SDLOC"><id extension="NL" root="2.16.840.1.113883.4.267"/><addr use="WP"><country>CA</country><state>NL</state><city>Corner Brook</city><postalCode>A1A 1A1</postalCode></addr><telecom use="WP" value="tel:+1-709-555-1212"/><location classCode="PLC" determinerCode="INSTANCE"><name>Test Location 1A</name></location></serviceDeliveryLocation></location><dataEntryLocation contextControlCode="AP" typeCode="ELOC"><serviceDeliveryLocation classCode="SDLOC"><id extension="NL" root="2.16.840.1.113883.4.267"/><addr use="WP"><country>CA</country><state>NL</state><city>Corner Brook</city><postalCode>A1A 1A1</postalCode></addr><telecom use="WP" value="tel:+1-709-555-1212"/><location classCode="PLC" determinerCode="INSTANCE"><name>Test Location 1A</name></location></serviceDeliveryLocation></dataEntryLocation><queryByParameter><queryId root="2BF86C33-468D-43E9-8DD7-4B05AFACC31D"/><parameterList><includeEventHistoryIndicator><value value="true"/></includeEventHistoryIndicator><includeIssuesIndicator><value value="true"/></includeIssuesIndicator><includeNotesIndicator><value value="true"/></includeNotesIndicator><includePendingChangesIndicator><value value="true"/></includePendingChangesIndicator><issueFilterCode><value code="U" codeSystem="2.16.840.1.113883.5.1096"><originalText>with unmanaged issues</originalText></value></issueFilterCode><mostRecentByDrugIndicator><value value="true"/></mostRecentByDrugIndicator><mostRecentDispenseForEachRxIndicator><value value="true"/></mostRecentDispenseForEachRxIndicator><patientBirthDate><value value="19851205"/></patientBirthDate><patientGender><value code="M" codeSystem="2.16.840.1.113883.5.1"><originalText>Male</originalText></value></patientGender><patientID><value extension="429632253424" root="2.16.840.1.113883.4.52"/></patientID><patientName><value use="L">BRANDON ANGUS HUMBER<family>HUMBER</family><prefix>Mr.</prefix></value></patientName><prescriptionOrderNumber><value/></prescriptionOrderNumber></parameterList></queryByParameter></controlActEvent></PORX_IN060350CA></soap:Body></soap:Envelope>
+2024-02-28 15:15:02,931 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapRequest]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Generating SOAP Request
+2024-02-28 15:15:02,936 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Getting SOAP Response
+2024-02-28 15:15:02,936 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Request Message ID : 718FB2E0-FED2-4B23-A8B3-432B022AE506
+2024-02-28 15:15:02,936 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Endpoint URL : http://100.77.129.196/T//V3-20080203L/XML/PORX_AR000002CA
+2024-02-28 15:15:02,936 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Soap Action : PORX_IN060350CA.LE20080203
+2024-02-28 15:15:02,936 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Opening Connection
+2024-02-28 15:15:02,940 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Opening Connection
+2024-02-28 15:15:13,771 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Calculating Response Time
+2024-02-28 15:15:13,771 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Calculating Response Time
+2024-02-28 15:15:13,771 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Reading SOAP Response
+2024-02-28 15:15:13,778 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Soap response: 
+<SOAP-ENV:Envelope xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SOAP-ENV:Header>
+    <wsa:MessageID xmlns:wsa="http://schemas.xmlsoap.org">F154FFF8-991E-4A2D-B7D9-9441BD3686DC</wsa:MessageID>
+    <wsa:RelatesTo>718FB2E0-FED2-4B23-A8B3-432B022AE506</wsa:RelatesTo>
+  </SOAP-ENV:Header>
+  <SOAP-ENV:Body>
+    <PORX_IN060350CA-Response xmlns="urn:hl7-org:v3">
+      <hl7:PORX_IN060360CA xmlns:hl7="urn:hl7-org:v3" ITSVersion="XML_1.0">
+          
+        <hl7:id root="F0837088-3E1D-4D79-86E6-9E98F6844824"></hl7:id>
+          
+        <hl7:creationTime value="20240228151512.0842-0500"></hl7:creationTime>
+          
+        <hl7:versionCode code="V3-2003-12"></hl7:versionCode>
+          
+        <hl7:interactionId extension="PORX_IN060360CA" root="2.16.840.1.113883.1.6"></hl7:interactionId>
+          
+        <hl7:processingCode code="T"></hl7:processingCode>
+          
+        <hl7:processingModeCode code="T"></hl7:processingModeCode>
+          
+        <hl7:acceptAckCode code="NE"></hl7:acceptAckCode>
+          
+        <hl7:receiver typeCode="RCV">
+              
+          <hl7:telecom value="http://www.w3.org/2005/08/addressing/anonymous"></hl7:telecom>
+              
+          <hl7:device classCode="DEV" determinerCode="INSTANCE">
+                  
+            <hl7:id extension="EHIP1" root="2.16.840.1.113883.3.133.1.30.101"></hl7:id>
+                
+          </hl7:device>
+            
+        </hl7:receiver>
+          
+        <hl7:sender typeCode="SND">
+              
+          <hl7:telecom value=""></hl7:telecom>
+              
+          <hl7:device classCode="DEV" determinerCode="INSTANCE">
+                  
+            <hl7:id root="2.16.840.1.113883.3.133.1.50.101"></hl7:id>
+                
+          </hl7:device>
+            
+        </hl7:sender>
+          
+        <hl7:acknowledgement>
+              
+          <hl7:typeCode code="AE"></hl7:typeCode>
+              
+          <hl7:messageWaitingNumber value="277"></hl7:messageWaitingNumber>
+              
+          <hl7:messageWaitingPriorityCode code="H" codeSystem="2.16.840.1.113883.5.1083"></hl7:messageWaitingPriorityCode>
+              
+          <hl7:targetMessage>
+                  
+            <hl7:id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"></hl7:id>
+                
+          </hl7:targetMessage>
+              
+          <hl7:acknowledgementDetail>
+                  
+            <hl7:code code="SYN102" codeSystem="2.16.840.1.113883.5.1100">
+                      
+              <hl7:originalText>A value was not submitted for Receiver Network Address.  This message did not conform to the HL7 standard. Please contact your vendor for more information. (113801)</hl7:originalText>
+                    
+            </hl7:code>
+                  
+            <hl7:text>NL107; Invalid data type specification - the format or structure specified do not match the expected data type for the element.- A value was not submitted for Receiver Network Address.  This message did not conform to the HL7 standard. Please contact your vendor for more information. (113801) - Transaction ID: E148F136-F162-4D5E-8B88-0F9677CD7F44</hl7:text>
+                
+          </hl7:acknowledgementDetail>
+              
+          <hl7:acknowledgementDetail>
+                  
+            <hl7:code code="INTERR" codeSystem="2.16.840.1.113883.5.1100">
+                      
+              <hl7:originalText>Error composing original response: missing mandatory complex element Sending Network Address (104708)</hl7:originalText>
+                    
+            </hl7:code>
+                  
+            <hl7:text>NL230; Internal error occurred in Core DIS. - Transaction ID: E148F136-F162-4D5E-8B88-0F9677CD7F44 </hl7:text>
+                
+          </hl7:acknowledgementDetail>
+              
+          <hl7:acknowledgementDetail>
+                  
+            <hl7:code code="INTERR" codeSystem="2.16.840.1.113883.5.1100">
+                      
+              <hl7:originalText>An error occurred during message composition due to a missing mandatory element (104708)</hl7:originalText>
+                    
+            </hl7:code>
+                  
+            <hl7:text>NL230; Internal error occurred in Core DIS. - Transaction ID: E148F136-F162-4D5E-8B88-0F9677CD7F44 </hl7:text>
+                
+          </hl7:acknowledgementDetail>
+              
+          <hl7:acknowledgementDetail>
+                  
+            <hl7:code code="INTERR" codeSystem="2.16.840.1.113883.5.1100">
+                      
+              <hl7:originalText>An internal application error occurred accessing data from the request transaction (305509)</hl7:originalText>
+                    
+            </hl7:code>
+                  
+            <hl7:text>NL230; Internal error occurred in Core DIS. - Transaction ID: E148F136-F162-4D5E-8B88-0F9677CD7F44 </hl7:text>
+                
+          </hl7:acknowledgementDetail>
+              
+          <hl7:acknowledgementDetail>
+                  
+            <hl7:code code="INTERR" codeSystem="2.16.840.1.113883.5.1100">
+                      
+              <hl7:originalText>Error composing original response: missing mandatory complex element Sending Network Address (104708)</hl7:originalText>
+                    
+            </hl7:code>
+                  
+            <hl7:text>NL230; Internal error occurred in Core DIS. - Transaction ID: E148F136-F162-4D5E-8B88-0F9677CD7F44 </hl7:text>
+                
+          </hl7:acknowledgementDetail>
+              
+          <hl7:acknowledgementDetail>
+                  
+            <hl7:code code="INTERR" codeSystem="2.16.840.1.113883.5.1100">
+                      
+              <hl7:originalText>An error occurred during message composition due to a missing mandatory element (104708)</hl7:originalText>
+                    
+            </hl7:code>
+                  
+            <hl7:text>NL230; Internal error occurred in Core DIS. - Transaction ID: E148F136-F162-4D5E-8B88-0F9677CD7F44 </hl7:text>
+                
+          </hl7:acknowledgementDetail>
+            
+        </hl7:acknowledgement>
+          
+        <hl7:controlActEvent classCode="CACT" moodCode="EVN">
+              
+          <hl7:id root="718FB2E0-FED2-4B23-A8B3-432B022AE506"></hl7:id>
+              
+          <hl7:code code="PORX_TE060270UV" codeSystem="2.16.840.1.113883.5.4">
+                  
+            <hl7:originalText>Medication profile detail generic query</hl7:originalText>
+                
+          </hl7:code>
+              
+          <hl7:statusCode code="completed"></hl7:statusCode>
+              
+          <hl7:subjectOf contextControlCode="AP" typeCode="SUBJ">
+                  
+            <hl7:detectedIssueEvent classCode="ALRT" moodCode="EVN">
+                      
+              <hl7:statusCode code="completed"></hl7:statusCode>
+                      
+              <hl7:subjectOf contextControlCode="ON" typeCode="SUBJ">
+                          
+                <hl7:severityObservation classCode="OBS" moodCode="EVN">
+                              
+                  <hl7:code code="SEV" codeSystem="2.16.840.1.113883.5.4"></hl7:code>
+                              
+                  <hl7:statusCode code="completed"></hl7:statusCode>
+                            
+                </hl7:severityObservation>
+                        
+              </hl7:subjectOf>
+                    
+            </hl7:detectedIssueEvent>
+                
+          </hl7:subjectOf>
+              
+          <hl7:queryAck>
+                  
+            <hl7:queryId root="2BF86C33-468D-43E9-8DD7-4B05AFACC31D"></hl7:queryId>
+                  
+            <hl7:queryResponseCode code="AE"></hl7:queryResponseCode>
+                  
+            <hl7:resultTotalQuantity value="0"></hl7:resultTotalQuantity>
+                  
+            <hl7:resultCurrentQuantity value="0"></hl7:resultCurrentQuantity>
+                  
+            <hl7:resultRemainingQuantity value="0"></hl7:resultRemainingQuantity>
+                
+          </hl7:queryAck>
+              
+          <hl7:queryByParameter>
+                  
+            <hl7:queryId root="2BF86C33-468D-43E9-8DD7-4B05AFACC31D"></hl7:queryId>
+                  
+            <hl7:initialQuantityCode code="RD" codeSystem="2.16.840.1.113883.5.1112"></hl7:initialQuantityCode>
+                  
+            <hl7:parameterList>
+                      
+              <hl7:includeEventHistoryIndicator>
+                          
+                <hl7:value value="true"></hl7:value>
+                        
+              </hl7:includeEventHistoryIndicator>
+                      
+              <hl7:includeIssuesIndicator>
+                          
+                <hl7:value value="true"></hl7:value>
+                        
+              </hl7:includeIssuesIndicator>
+                      
+              <hl7:includeNotesIndicator>
+                          
+                <hl7:value value="true"></hl7:value>
+                        
+              </hl7:includeNotesIndicator>
+                      
+              <hl7:includePendingChangesIndicator>
+                          
+                <hl7:value value="true"></hl7:value>
+                        
+              </hl7:includePendingChangesIndicator>
+                      
+              <hl7:issueFilterCode>
+                          
+                <hl7:value code="U" codeSystem="2.16.840.1.113883.5.1096">
+                              
+                  <hl7:originalText>with unmanaged issues</hl7:originalText>
+                            
+                </hl7:value>
+                        
+              </hl7:issueFilterCode>
+                      
+              <hl7:mostRecentByDrugIndicator>
+                          
+                <hl7:value value="true"></hl7:value>
+                        
+              </hl7:mostRecentByDrugIndicator>
+                      
+              <hl7:mostRecentDispenseForEachRxIndicator>
+                          
+                <hl7:value value="true"></hl7:value>
+                        
+              </hl7:mostRecentDispenseForEachRxIndicator>
+                      
+              <hl7:patientBirthDate>
+                          
+                <hl7:value value="19851205"></hl7:value>
+                        
+              </hl7:patientBirthDate>
+                      
+              <hl7:patientGender>
+                          
+                <hl7:value code="M" codeSystem="2.16.840.1.113883.5.1">
+                              
+                  <hl7:originalText>Male</hl7:originalText>
+                            
+                </hl7:value>
+                        
+              </hl7:patientGender>
+                      
+              <hl7:patientID>
+                          
+                <hl7:value extension="429632253424" root="2.16.840.1.113883.4.52"></hl7:value>
+                        
+              </hl7:patientID>
+                      
+              <hl7:patientName>
+                          
+                <hl7:value use="L">
+                  BRANDON ANGUS HUMBER
+                  <hl7:family>HUMBER</hl7:family>
+                              
+                  <hl7:prefix>Mr.</hl7:prefix>
+                            
+                </hl7:value>
+                        
+              </hl7:patientName>
+                    
+            </hl7:parameterList>
+                
+          </hl7:queryByParameter>
+            
+        </hl7:controlActEvent>
+      </hl7:PORX_IN060360CA>
+    </PORX_IN060350CA-Response>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+2024-02-28 15:15:13,779 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Response time for this Request: 10.835 msec
+2024-02-28 15:15:13,779 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Reading SOAP Response
+2024-02-28 15:15:13,779 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Getting SOAP Response
+2024-02-28 15:15:13,779 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Validating SOAP Response
+2024-02-28 15:15:13,780 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Checking MessageID and RelatesTo
+2024-02-28 15:15:13,780 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Assertion 1 passed: MessageID and RelatesTo elements are not null
+2024-02-28 15:15:13,780 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Response MessageID: F154FFF8-991E-4A2D-B7D9-9441BD3686DC
+2024-02-28 15:15:13,780 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Response RelatesTo: 718FB2E0-FED2-4B23-A8B3-432B022AE506
+2024-02-28 15:15:13,780 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - START: Checking typeCode Value
+2024-02-28 15:15:13,791 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Assertion 2 failed: typeCode="AE"
+2024-02-28 15:15:13,792 DEBUG [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Checking typeCode Value
+2024-02-28 15:15:13,792 INFO [http-nio-8080-exec-4] [com.telushealth.hialtesthub.entity.SoapResponse]  | 718FB2E0-FED2-4B23-A8B3-432B022AE506 | Service - END: Validating SOAP Response

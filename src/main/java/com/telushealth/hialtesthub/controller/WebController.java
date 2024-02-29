@@ -145,4 +145,22 @@ public class WebController {
 
 		return "details";
 	}
+	
+	@GetMapping("/endpoint")
+	public String showEndpoint(Model model) {
+		Endpoint endpoint = endpointService.getEndpoint();
+		model.addAttribute("endpoint", endpoint);
+		return "endpoint";
+	}
+	
+	@PostMapping("/endpoint")
+	public String updateEndpoint(Endpoint endpoint, Model model) {
+		// Save the endpoint in the session attribute
+		model.addAttribute("endpoint", endpoint);
+		// Save the endpoint in database
+		endpointService.saveEndpoint(endpoint);
+
+		// Redirect to the home page
+		return "endpoint";
+	}
 }

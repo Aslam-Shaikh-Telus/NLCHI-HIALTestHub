@@ -22,6 +22,7 @@ import javax.xml.xpath.XPathFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.w3c.dom.Document;
 
@@ -42,6 +43,8 @@ public class SoapResponse {
 	private String responseTypeCode;
 	private String responseTime;
 	private String responseXml;
+	@Transient
+	private String msgId;
 
 	public String getResponseMessageId() {
 		return responseMessageId;
@@ -101,22 +104,23 @@ public class SoapResponse {
 
 	public SoapResponse() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public SoapResponse(String msgId, SoapRequest soapRequest) {
 
+		this.msgId = msgId;
+
 		try {
-			getResponseForSoapRequest(msgId, soapRequest);
+			getResponseForSoapRequest(soapRequest);
 		} catch (Exception e) {
-			logger.error("Error in SoapResponse constructor: " + e.getMessage(), e);
+			logger.error(" | {} | Error in SoapResponse constructor: {}", msgId, e.getMessage());
 		}
 
-		validateSOAPResponse(msgId, this.responseXml);
+		validateSOAPResponse(this.responseXml);
 	}
 
-	private void validateSOAPResponse(String msgId, String responseXml) {
-		logger.info("Service - START: Validating SOAP Response");
+	private void validateSOAPResponse(String responseXml) {
+		logger.info(" | {} | Service - START: Validating SOAP Response", msgId);
 
 		try {
 			Document soapResponseDoc = XMLUtils.stringToXmlDocument(responseXml);
@@ -131,14 +135,14 @@ public class SoapResponse {
 			}
 
 		} catch (Exception e) {
-			logger.error("Error validating SOAP response: " + e.getMessage(), e);
+			logger.error(" | {} | Error validating SOAP response: {}", msgId, e.getMessage());
 		}
 
-		logger.info("Service - END: Validating SOAP Response");
+		logger.info(" | {} | Service - END: Validating SOAP Response", msgId);
 	}
 
 	private void checkTypeCodeValue(Document soapResponseDoc) throws XPathExpressionException {
-		logger.debug("Service - START: Checking typeCode Value");
+		logger.debug(" | {} | Service - START: Checking typeCode Value", msgId);
 		// Create an XPath instance
 		XPathFactory xpathFactory = XPathFactory.newInstance();
 		XPath xpath = xpathFactory.newXPath();
@@ -173,76 +177,100 @@ public class SoapResponse {
 		this.responseTypeCode = (String) expr.evaluate(soapResponseDoc, XPathConstants.STRING);
 
 		if ("AA".equals(this.responseTypeCode)) {
-			logger.info("Assertion 2 passed: typeCode=\"AA\"");
+			logger.info(" | {} | Assertion 2 passed: typeCode=\"AA\"", msgId);
 		} else if ("AE".equals(this.responseTypeCode)) {
-			logger.info("Assertion 2 failed: typeCode=\"AE\"");
+			logger.info(" | {} | Assertion 2 failed: typeCode=\"AE\"", msgId);
 		} else {
-			logger.warn("Assertion 2 failed: typeCode=\"" + this.responseTypeCode + "\"");
+			logger.warn(" | {} | Assertion 2 failed: typeCode=\"{}\"", msgId, this.responseTypeCode);
 			this.responseStatus = ResponseStatus.FAIL;
 		}
 
-		logger.info("Service - END: Checking typeCode Value");
+		logger.debug(" | {} | Service - END: Checking typeCode Value", msgId);
 	}
 
 	private ResponseStatus checkMessageIDAndRelatesToInResponse(String msgId, Document soapResponseDoc) {
-		logger.debug("Service - START: Checking MessageID and RelatesTo");
+		logger.debug(" | {} | Service - START: Checking MessageID and RelatesTo", msgId);
 
 		this.responseMessageId = XMLUtils.getElementValue(soapResponseDoc, "wsa:MessageID");
 		this.responseRelateTo = XMLUtils.getElementValue(soapResponseDoc, "wsa:RelatesTo");
 
 		if (this.responseMessageId != null && this.responseRelateTo != null) {
 			if (this.responseRelateTo.equals(msgId)) {
-				logger.info("Assertion 1 passed: MessageID and RelatesTo elements are not null");
-				logger.info("Response MessageID: " + this.responseMessageId);
-				logger.info("Response RelatesTo: " + this.responseRelateTo);
+				logger.info(" | {} | Assertion 1 passed: MessageID and RelatesTo elements are not null",
+						getResponseRelateTo());
+				logger.info(" | {} | Response MessageID: {}", msgId, this.responseMessageId);
+				logger.info(" | {} | Response RelatesTo: {}", msgId, this.responseRelateTo);
 				return ResponseStatus.PASS;
 			} else {
-				logger.info("Assertion 1 failed: Response is not related to the original soap request");
+				logger.info(" | {} | Assertion 1 failed: Response is not related to the original soap request", msgId);
 				return ResponseStatus.FAIL;
 			}
 
 		} else {
-			logger.warn("Assertion 1 failed: MessageID or RelatesTo is null");
+			logger.warn(" | {} | Assertion 1 failed: MessageID or RelatesTo is null", msgId);
 			return ResponseStatus.FAIL;
 		}
 	}
 
-	private void getResponseForSoapRequest(String msgId, SoapRequest soapRequest) throws Exception {
-		logger.info("Service - START: Getting SOAP Response");
-		logger.info("Request Message ID : " + msgId);
-		logger.info("Endpoint URL : " + soapRequest.getEndpointUrl());
-		logger.info("Soap Action : " + soapRequest.getSoapAction());
+	private void getResponseForSoapRequest(SoapRequest soapRequest) throws Exception {
+		logger.info(" | {} | Service - START: Getting SOAP Response", msgId);
+		logger.info(" | {} | Request Message ID : {}", msgId, msgId);
+		logger.info(" | {} | Endpoint URL : {}", msgId, soapRequest.getEndpointUrl());
+		logger.info(" | {} | Soap Action : {}", msgId, soapRequest.getSoapAction());
 
 		long startTime = System.currentTimeMillis(); // Record the start time
 
-		// Open an HTTP connection to the specified endpointURL
-		HttpURLConnection connection = openConnection(soapRequest.getEndpointUrl(), soapRequest.getSoapAction());
+		try {
+			// Open an HTTP connection to the specified endpointURL
+			HttpURLConnection connection = openConnection(soapRequest.getEndpointUrl(), soapRequest.getSoapAction());
 
-		// Write the XML request to the output stream
-		try (OutputStream os = connection.getOutputStream()) {
-			byte[] xmlBytes = soapRequest.getRequestXml().getBytes(StandardCharsets.UTF_8);
-			os.write(xmlBytes, 0, xmlBytes.length);
-		}
+			// Write the XML request to the output stream
+			try (OutputStream os = connection.getOutputStream()) {
+				byte[] xmlBytes = soapRequest.getRequestXml().getBytes(StandardCharsets.UTF_8);
+				os.write(xmlBytes, 0, xmlBytes.length);
+			}
 
-		// Get the HTTP response code
-		int responseCode = connection.getResponseCode();
+			// Get the HTTP response code
+			int responseCode = connection.getResponseCode();
 
-		this.responseTime = calculateFormattedResponseTime(startTime);
+			this.responseTime = calculateFormattedResponseTime(startTime);
 
-		// Read and return the SOAP response based on the response code
-		if (responseCode == HttpURLConnection.HTTP_OK) {
-			this.responseXml = readSOAPResponse(connection.getInputStream());
+			// Read and return the SOAP response based on the response code
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				this.responseXml = readSOAPResponse(connection.getInputStream());
+			} else {
+				this.responseXml = readErrorResponse(connection.getErrorStream(), responseCode);
+				this.responseStatus = ResponseStatus.FAIL;
+			}
 
-		} else {
-			this.responseXml = readSOAPResponse(connection.getErrorStream());
+		} catch (Exception e) {
+			logger.error(" | {} | Error getting SOAP response: {}", msgId, e.getMessage());
+			this.responseXml = "Error getting SOAP response: " + e.getMessage();
 			this.responseStatus = ResponseStatus.FAIL;
 		}
 
-		logger.info("Service - END: Getting SOAP Response");
+		logger.info(" | {} | Service - END: Getting SOAP Response", msgId);
+	}
+
+	private String readErrorResponse(InputStream errorStream, int responseCode) throws IOException {
+		logger.debug(" | {} | Service - START: Reading Error Response", msgId);
+
+		StringBuilder errorResponse = new StringBuilder();
+		errorResponse.append("HTTP Response Code: ").append(responseCode).append("\n");
+
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				errorResponse.append(line);
+			}
+		}
+
+		logger.debug(" | {} | Service - END: Reading Error Response", msgId);
+		return errorResponse.toString();
 	}
 
 	private String readSOAPResponse(InputStream inputStream) throws Exception {
-		logger.debug("Service - START: Reading SOAP Response");
+		logger.debug(" | {} | Service - START: Reading SOAP Response", msgId);
 
 		String responseXmlString;
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -253,16 +281,16 @@ public class SoapResponse {
 			}
 
 			responseXmlString = response.toString();
-			logger.info("Soap response: \n" + XMLUtils.xmlStringToPrettyPrintString(responseXmlString));
-			logger.info("Response time for this Request: " + this.responseTime + " msec");
+			logger.info(" | {} | Soap response: \n{}", msgId, XMLUtils.xmlStringToPrettyPrintString(responseXmlString));
+			logger.info(" | {} | Response time for this Request: {}", msgId, this.responseTime + " msec");
 		}
 
-		logger.debug("Service - END: Reading SOAP Response");
+		logger.debug(" | {} | Service - END: Reading SOAP Response", msgId);
 		return responseXmlString;
 	}
 
 	private String calculateFormattedResponseTime(long startTime) {
-		logger.debug("Service - START: Calculating Response Time");
+		logger.debug(" | {} | Service - START: Calculating Response Time", msgId);
 
 		long endTime = System.currentTimeMillis();
 		long responseTimeMillis = endTime - startTime;
@@ -273,12 +301,12 @@ public class SoapResponse {
 		DecimalFormat decimalFormat = new DecimalFormat("0.000");
 		String formattedResponseTime = decimalFormat.format(responseTimeSeconds);
 
-		logger.debug("Service - END: Calculating Response Time");
+		logger.debug(" | {} | Service - END: Calculating Response Time", msgId);
 		return formattedResponseTime;
 	}
 
 	private HttpURLConnection openConnection(String endpointUrl, String soapAction) throws IOException {
-		logger.debug("Service - START: Opening Connection");
+		logger.debug(" | {} | Service - START: Opening Connection", msgId);
 
 		URL url = new URL(endpointUrl);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -288,7 +316,7 @@ public class SoapResponse {
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
 
-		logger.debug("Service - END: Opening Connection");
+		logger.debug(" | {} | Service - END: Opening Connection", msgId);
 		return connection;
 	}
 }

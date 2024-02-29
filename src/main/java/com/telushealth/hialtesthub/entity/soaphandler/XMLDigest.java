@@ -40,7 +40,7 @@ public class XMLDigest {
 
     public void digestBody() {
         try {
-            logger.debug("Service - START: Generating SOAP Digest Value");
+            logger.info(" | {} | Service - START: Generating SOAP Digest Value", msgId);
 
             byte[] bodyByteArray = this.xmlString.getBytes();
 
@@ -52,7 +52,7 @@ public class XMLDigest {
             byte[] canonXmlBytes = canonicalXmlOutputStream.toByteArray();
 
             this.canonicalString = new String(canonXmlBytes);
-            logger.debug("Canonical Body: {}", this.canonicalString);
+            logger.debug(" | {} | Canonical Body: {}", msgId, this.canonicalString);
 
             MessageDigest digest = MessageDigest.getInstance("SHA-1");
             digest.reset();
@@ -60,11 +60,11 @@ public class XMLDigest {
             byte[] hash = digest.digest();
 
             this.digestValue = Base64.getEncoder().encodeToString(hash);
-            logger.info("Digest Value: {}", this.digestValue);
+            logger.info(" | {} | Digest Value: {}", msgId, this.digestValue);
 
-            logger.debug("Service - END: Generating SOAP Digest Value");
+            logger.info(" | {} | Service - END: Generating SOAP Digest Value", msgId);
         } catch (Exception e) {
-            throw new RuntimeException("Error processing XML digest.", e);
+            throw new RuntimeException(" | " + msgId + " | Error processing XML digest.", e);
         }
     }
 }

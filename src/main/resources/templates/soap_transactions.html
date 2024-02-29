@@ -40,6 +40,30 @@
 	</div>
 
 	<script>
+		
+		// Function to update the username@endpointIP in the navbar
+		function updateUsernameEndpoint() {
+			$.ajax({
+				url: '/api/endpoint/get',
+				method: 'GET',
+				dataType: 'json',
+				success: function (endpoints) {
+					// Assuming there is only one endpoint for the user
+					if (endpoints.length > 0) {
+						var endpoint = endpoints[0];
+						var usernameEndpoint = endpoint.username + '@' + endpoint.ipAddress;
+						$('#usernameEndpoint').text(usernameEndpoint);
+					}
+				},
+				error: function () {
+					console.error('Error retrieving endpoint data.');
+				}
+			});
+		}
+
+		// Call the function to update the username@endpointIP initially
+		updateUsernameEndpoint();
+		
 		// Function to format the timestamp
 		function formatTimestamp(timestamp) {
 			// Convert the timestamp to a Date object
