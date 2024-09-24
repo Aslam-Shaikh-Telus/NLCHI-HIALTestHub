@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>HIALTestHub | Load Test</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+
+	<div th:replace="fragments\navbar :: navbar"></div>
+
+	<br>
+	<div class="container-fluid">
+		<h1>Load Test</h1>
+	</div>
+	<div class="container-fluid">
+		<!-- Inline Form for Threads and Timelimit -->
+		<form class="d-inline-flex justify-content-start align-items-center row g-3">
+			<div class="col-md-2">
+				<label for="threads" class="form-label">Threads</label>
+			</div>
+			<div class="col-md-2">
+				<input type="text" class="form-control" id="threads" placeholder="Threads">
+			</div>
+			<div class="col-md-2">
+				<label for="timelimit" class="form-label">Timelimit (Seconds)</label>
+			</div>
+			<div class="col-md-2">
+				<input type="text" class="form-control" id="timelimit" placeholder="Timelimit">
+			</div>
+			<div class="col-auto">
+				<button type="button" class="btn btn-primary" id="runButton"
+					onclick="validateAndRunLoadTest()">Run</button>
+			</div>
+			<div class="col-auto">
+				<button type="button" class="btn btn-danger" id="stopButton" onclick="stopLoadTest()"
+					disabled>Stop</button>
+			</div>
+		</form>
+	</div>
+	<br>
+	<div class="container-fluid" id="loadRunnerContainer" style="display: none;">
+		<form class="d-flex flex-row">
+			<span class="pe-3">Endpoint:</span>
+			<span id="usernameEndpoint2">username@endpointIP</span>
+		</form>
+		<form class="d-flex flex-row">
+			<span class="pe-2">Start Time:</span>
+			<span id="startTime"></span>
+		</form>
+		<button class="btn my-2 btn-outline-primary" onclick="openDetailsInNewTab()">Get details</button>
+
+	</div>
+
+	<div class="container-fluid">
+		<table class="table table-hover table-bordered">
+			<thead class="table-light">
+				<tr>
+					<th>ID</th>
+					<th>Description</th>
+					<th>cnt</th>
+					<th>fail</th>
+					<th>rat</th>
+					<th>min</th>
+					<th>max</th>
+					<th>avg</th>
+				</tr>
+			</thead>
+			<tbody id="loadTestResultsContainer">
+				<!-- test result stat rows will be loaded here via AJAX -->
+			</tbody>
+		</table>
+	</div>
+	<br>
+
+	<!-- Report Stats Table -->
+	<div class="container-fluid" id="reportStatsContainer" style="display: none;">
+		<div>
+			<h4>Report:</h4>
+		</div>
+		<table class="table table-sm table-bordered d-inline container-flui">
+			<thead class="table-light">
+				<tr>
+					<th>Duration(s)</th>
+					<th>Interactions</th>
+					<th>% of Total</th>
+					<th>Avg Duration(s)</th>
+				</tr>
+			</thead>
+			<tbody id="reportStatsTableBody">
+				<!-- report stats rows will be loaded here via AJAX -->
+			</tbody>
+		</table>
+	</div>
+	<br>
+	<br>
+
+
+	<script>
+		// Function to update the username@endpointIP in the navbar
+		function updateUsernameEndpoint() {
+			$.ajax({
+				url: '/api/endpoint/get',
+				method: 'GET',
+				dataType: 'json',
+				success: function (endpoints) {
+					// Assuming there is only one endpoint for the user
+					if (endpoints.length > 0) {
+						var endpoint = endpoints[0];
+						var usernameEndpoint = endpoint.username + '@' + endpoint.ipAddress;
+						$('#usernameEndpoint').text(usernameEndpoint);
+						$('#usernameEndpoint2').text(usernameEndpoint);
+					}
+				},
+				error: function () {
+					console.error('Error retrieving endpoint data.');
+				}
+			});
+		}
+
+		// Call the function to update the username@endpointIP initially
+		updateUsernameEndpoint();
+
+		// Function to validate and run load test
+		async function validateAndRunLoadTest() {
+			var threads = $('#threads').val();
+			var timelimit = $('#timelimit').val();
+
+			if (threads && timelimit) {
+
+				localStorage.removeItem('loadTestResult');
+				localStorage.removeItem('startTime');
+				localStorage.setItem('loadTestRunning', true);
+
+				// Display the report stats table
+				$('#reportStatsContainer').hide();
+
+				// Display the Load test details
+				$('#loadRunnerContainer').show();
+
+				// Disable the Run button and enable the Stop button
+				$('#threads').prop('disabled', true);
+				$('#timelimit').prop('disabled', true);
+				$('#stopButton').prop('disabled', false);
+				$('#runButton').prop('disabled', true);
+
+				try {
+					// Run the load test and store the start time locally
+					var loadTestResult = $.ajax({
+						url: '/api/runtest/loadtest',
+						method: 'GET',
+						data: {
+							numThreads: threads,
+							testDurationSeconds: timelimit
+						},
+						dataType: 'json',
+						success: function (loadTestResult) {
+
+							// Display the report stats table
+							$('#reportStatsContainer').show();
+
+							$('#startTime').text(loadTestResult.startTestTime);
+
+							// Fetch and display report stats
+							updateReportStats(loadTestResult.startTestTime, loadTestResult.endTestTime);
+
+							localStorage.setItem('loadTestRunning', false);
+
+
+							// Enable the Run button and disable the Stop button
+							$('#threads').prop('disabled', false);
+							$('#timelimit').prop('disabled', false);
+							$('#stopButton').prop('disabled', true);
+							$('#runButton').prop('disabled', false);
+
+							console.log('Load test finished successfully:', updateTable(loadTestResult));
+
+						},
+					});
+
+					// Clear existing rows
+					$('#loadTestResultsContainer').empty();
+
+					await sleep(2000);
+
+
+					//var startTestTime = localStorage.getItem('loadTestResult').startTestTime;
+					//console.log('localStorage start test time value: ' + (localStorage.getItem('startTime') == null ? 'null' : localStorage.getItem('startTime')));
+					// Wait until start time is available
+					while (localStorage.getItem('startTime') == null) {
+						console.log('Waiting for start time...');
+						await sleep(1000); // Adjust the interval as needed
+						await getLoadTestStartTime();
+					}
+
+					//var startTestTime = window.startTime;
+					//window.testRunning = true;
+
+					// Store relevant information in localStorage
+					localStorage.setItem('loadTestRunning', true);
+					//localStorage.setItem('startTime', startTestTime);
+
+					// Set up an interval to periodically update load test results
+					var intervalId = setInterval(async function () {
+
+						if (localStorage.getItem('loadTestRunning') == 'true') {
+							console.log("Updating result stat table.");
+							await updateLoadTestResults(localStorage.getItem('startTime'));
+						} else {
+							clearInterval(intervalId);
+							console.log('Test ended. Stopping result stat table.');
+						}
+					}, 2000); // Set your desired interval in milliseconds (e.g., 2000 for 2 seconds)
+
+				} catch (error) {
+					console.error('Error running load test:', error);
+				} finally {
+
+				}
+			} else {
+				alert('Please enter valid values for Threads and Timelimit.');
+			}
+		}
+
+		// Sleep function to introduce delays
+		function sleep(ms) {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+
+		// Function to stop the load test
+		function stopLoadTest() {
+			$.ajax({
+				url: '/api/runtest/loadtest/stop',
+				method: 'GET',
+				success: function () {
+					// Display the report stats table
+					$('#reportStatsContainer').show();
+
+
+					$('#startTime').text(localStorage.getItem('startTime'));
+
+					// Fetch and display report stats
+					updateReportStats(localStorage.getItem('startTime'), localStorage.getItem(loadTestResult.endTestTime));
+
+					localStorage.setItem('loadTestRunning', false);
+
+					// Enable the Run button and disable the Stop button
+					$('#threads').prop('disabled', false);
+					$('#timelimit').prop('disabled', false);
+					$('#stopButton').prop('disabled', true);
+					$('#runButton').prop('disabled', false);
+
+					console.log('Load test stopped successfully.');
+				},
+				error: function () {
+					console.error('Error stopping load test.');
+				}
+			});
+		}
+
+		// Function to update the load test results
+		function getLoadTestStartTime() {
+			// Fetch the load test result by start time
+			$.ajax({
+				url: '/api/loadtestresult/getLatestStartTime',
+				method: 'GET',
+				dataType: 'text',  // assuming the data type is text
+				success: function (startTestTime) {
+					console.log('Test start time: ' + startTestTime)
+					localStorage.setItem('startTime', startTestTime);
+				},
+				error: function () {
+					console.error('Error fetching load test results.');
+				}
+			});
+		}
+
+		// Function to update the load test results
+		function updateLoadTestResults(startTime) {
+			// Fetch the load test result by start time
+			$.ajax({
+				url: '/api/loadtestresult/getByStartTime',
+				method: 'GET',
+				data: {
+					startTestTime: startTime
+				},
+				dataType: 'json',
+				success: function (loadTestResult) {
+					// Update the table with the new load test results
+					updateTable(loadTestResult);
+
+					// Check if endTestTime is available
+					if (loadTestResult.endTestTime) {
+						// If endTestTime is present, the test has ended
+						localStorage.setItem('loadTestRunning', false);
+						// Display the report stats table
+						$('#reportStatsContainer').show();
+
+
+
+						$('#startTime').text(loadTestResult.startTestTime);
+
+						// Fetch and display report stats
+						updateReportStats(loadTestResult.startTestTime, loadTestResult.endTestTime);
+					}
+				},
+				error: function () {
+					console.error('Error fetching load test results.');
+				}
+			});
+		}
+
+		// Function to update the table with load test results
+		function updateTable(loadTestResult) {
+			// Clear existing rows
+			$('#loadTestResultsContainer').empty();
+
+			$('#startTime').text(loadTestResult.startTestTime);
+
+			localStorage.setItem('loadTestResult', loadTestResult);
+
+			// Check if loadTestResult is not null
+			if (loadTestResult) {
+				// Iterate through testResultStats and append rows to the table
+				var totalCnt = 0;
+				var totalFail = 0;
+				//Arrays to store individual metric values
+				var minTimes = [];
+				var maxTimes = [];
+				var avgTimes = [];
+
+				$.each(loadTestResult.testResultStats, function (index, testResultStat) {
+					totalCnt += testResultStat.testCount;
+					totalFail += testResultStat.failCount;
+					minTimes.push(testResultStat.minResponseTime);
+					maxTimes.push(testResultStat.maxResponseTime);
+					avgTimes.push(testResultStat.avgResponseTime);
+
+
+					$('#loadTestResultsContainer').append(
+						'<tr>' +
+						'<td>' + testResultStat.interactionId + '</td>' +
+						'<td>' + testResultStat.description + '</td>' +
+						'<td>' + testResultStat.testCount + '</td>' +
+						'<td>' + testResultStat.failCount + '</td>' +
+						'<td>' + testResultStat.successRatio + '</td>' +
+						'<td>' + testResultStat.minResponseTime + '</td>' +
+						'<td>' + testResultStat.maxResponseTime + '</td>' +
+						'<td>' + testResultStat.avgResponseTime.toFixed(3) + '</td>' +
+						'</tr>'
+					);
+				});
+
+				var totalMin = findMin(minTimes);
+				var totalMax = findMax(maxTimes);
+				var totalAvg = avgTimes.length > 0 ? avgTimes.reduce((a, b) => a + b, 0) / avgTimes.length : 0;
+
+
+				// Append a row with total values
+				$('#loadTestResultsContainer').append(
+					'<tr>' +
+					'<td colspan="2">Total</td>' +
+					'<td>' + totalCnt + '</td>' +
+					'<td>' + totalFail + '</td>' +
+					'<td>' + ((totalCnt - totalFail) / totalCnt * 100).toFixed(2) + '</td>' +
+					'<td>' + totalMin.toFixed(3) + '</td>' +
+					'<td>' + totalMax.toFixed(3) + '</td>' +
+					'<td>' + totalAvg.toFixed(3) + '</td>' +
+					'</tr>'
+				);
+			}
+		}
+		// Function to find the minimum value in an array
+		function findMin(arr) {
+			if (arr.length === 0) return 0;
+			var min = arr[0];
+			for (var i = 1; i < arr.length; i++) {
+				if (arr[i] < min) {
+					min = arr[i];
+				}
+			}
+			return min;
+		}
+
+		// Function to find the maximum value in an array
+		function findMax(arr) {
+			if (arr.length === 0) return 0;
+			var max = arr[0];
+			for (var i = 1; i < arr.length; i++) {
+				if (arr[i] > max) {
+					max = arr[i];
+				}
+			}
+			return max;
+		}
+
+		// Function to update the report stats table
+		function updateReportStats(startTestTime, endTestTime) {
+
+
+			$.ajax({
+				url: '/api/loadtestresult/getReportStats',
+				method: 'GET',
+				data: {
+					startTestTime: startTestTime,
+					endTestTime: endTestTime
+				},
+				dataType: 'json',
+				success: function (reportStatsList) {
+					// Update the report stats table
+					updateReportStatsTable(reportStatsList);
+				},
+				error: function () {
+					console.error('Error fetching report stats.');
+				}
+			});
+
+			updateLoadTestResults(startTestTime);
+		}
+
+		// Function to update the report stats table
+		function updateReportStatsTable(reportStatsList) {
+			// Clear existing rows
+			$('#reportStatsTableBody').empty();
+
+			// Check if reportStatsList is not null
+			if (reportStatsList) {
+				// Iterate through report stats and append rows to the table
+				$.each(reportStatsList, function (index, reportStats) {
+					$('#reportStatsTableBody').append(
+						'<tr>' +
+						'<td>' + reportStats.durationRange + '</td>' +
+						'<td>' + reportStats.interactions + '</td>' +
+						'<td>' + reportStats.percentageTotal.toFixed(2) + '%' + '</td>' +
+						'<td>' + reportStats.avgDuration.toFixed(3) + '</td>' +
+						'</tr>'
+					);
+				});
+			}
+		}
+
+		// Function to check if the load test is running and retrieve the start time
+		function checkLoadTestState() {
+			var loadTestResult = localStorage.getItem('loadTestResult');
+			console.log('loadTestRunning: ' + localStorage.getItem('loadTestRunning'));
+			var loadTestRunning = localStorage.getItem('loadTestRunning');
+			//var startTime = localStorage.getItem('startTime');
+
+
+			if (loadTestResult) {
+				if (loadTestRunning == 'true') {
+					// Disable the Run button and enable the Stop button
+					$('#threads').prop('disabled', true);
+					$('#timelimit').prop('disabled', true);
+					$('#stopButton').prop('disabled', false);
+					$('#runButton').prop('disabled', true);
+
+					// Set thread and timelimit values from loadTestResult
+					$('#threads').prop('placeholder', loadTestResult.numThreads);
+					$('#threads').val(loadTestResult.numThreads);
+					$('#timelimit').val(loadTestResult.testDurationSeconds);
+
+					updateTable(loadTestResult);
+
+					// Set up an interval to periodically update load test results
+					var intervalId = setInterval(async function () {
+						if (loadTestRunning == 'true') {
+							console.log("Continue updating result stat table.");
+							await updateLoadTestResults(loadTestResult.startTestTime);
+						} else {
+							clearInterval(intervalId);
+							console.log('Stopping updating result stat table.');
+						}
+					}, 2000); // Set your desired interval in milliseconds (e.g., 2000 for 2 seconds)
+				} else {
+					// Enable the Run button and disable the Stop button
+					$('#threads').prop('disabled', false);
+					$('#timelimit').prop('disabled', false);
+					$('#stopButton').prop('disabled', true);
+					$('#runButton').prop('disabled', false);
+
+					updateTable(loadTestResult);
+				}
+			}
+		}
+
+		// Function to open the details page with the selected Msg ID in a new tab
+		function openDetailsInNewTab() {
+			getLoadTestStartTime();
+			var url = '/getloadtestdetails?startTime=' + localStorage.getItem('startTime');
+			var win = window.open(url, '_blank');
+			win.focus();
+		}
+
+
+		// Call the function to check the load test state when the page loads
+		//$(document).ready(function () {
+			//checkLoadTestState();
+		//});
+
+	</script>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

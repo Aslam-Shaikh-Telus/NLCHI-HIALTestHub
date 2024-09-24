@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>HIALTesthub | Load test Transaction</title>
+	<!-- Include Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+
+	<div th:replace="fragments\navbar :: navbar"></div>
+
+	<div class="container-fluid">
+		<br>
+		<div>
+			<h1>Load Test Transaction</h1>
+			<form class="d-flex flex-row">
+				<span class="pe-3">Endpoint:</span>
+				<span id="usernameEndpoint2">username@endpointIP</span>
+			</form>
+			<form class="d-flex flex-row">
+				<span class="pe-2">Start Time:</span>
+				<span id="startTime" th:text="${loadTestResult.startTestTime}"></span>
+			</form>
+			<button id="exportButton" class="btn btn-outline-primary my-2">Export to CSV</button>
+
+		</div>
+		<br>
+		<table id="soapTransactionTable" class="table table-hover table-bordered">
+			<thead class="table-dark">
+				<tr>
+					<th>No.</th>
+					<th>Timestamp</th>
+					<th>Msg ID</th>
+					<th>Interaction ID</th>
+					<th>Response Status</th>
+					<th>Response Type Code</th>
+					<th>Response Time</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Data will be loaded here via AJAX -->
+			</tbody>
+		</table>
+	</div>
+
+	<script>
+
+		// Function to update the username@endpointIP in the navbar
+		function updateUsernameEndpoint() {
+			$.ajax({
+				url: '/api/endpoint/get',
+				method: 'GET',
+				dataType: 'json',
+				success: function (endpoints) {
+					// Assuming there is only one endpoint for the user
+					if (endpoints.length > 0) {
+						var endpoint = endpoints[0];
+						var usernameEndpoint = endpoint.username + '@' + endpoint.ipAddress;
+						$('#usernameEndpoint').text(usernameEndpoint);
+						$('#usernameEndpoint2').text(usernameEndpoint);
+					}
+				},
+				error: function () {
+					console.error('Error retrieving endpoint data.');
+				}
+			});
+		}
+
+		// Call the function to update the username@endpointIP initially
+		updateUsernameEndpoint();
+		
+		var loadTestStartTime = $('#startTime').text();
+		//console.log(loadTestStartTime);
+
+		//$('#startTime').text(loadTestStartTime);
+
+
+		// Function to format the timestamp
+		function formatTimestamp(timestamp) {
+			// Convert the timestamp to a Date object
+			var date = new Date(timestamp);
+
+			// Format the date components
+			var year = date.getFullYear();
+			var month = (date.getMonth() + 1).toString().padStart(2, '0');
+			var day = date.getDate().toString().padStart(2, '0');
+			var hours = date.getHours().toString().padStart(2, '0');
+			var minutes = date.getMinutes().toString().padStart(2, '0');
+			var seconds = date.getSeconds().toString().padStart(2, '0');
+			var milliseconds = date.getMilliseconds().toString().padStart(3, '0');
+
+			// Assemble the formatted timestamp
+			var formattedTimestamp = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
+
+			return formattedTimestamp;
+		}
+
+		function getRowBackgroundColor(responseStatus, responseTypeCode) {
+			if (responseStatus === 'FAIL') {
+				return 'table-danger';
+			} else if (responseStatus === 'PASS' && responseTypeCode === 'AA') {
+				return 'table-success';
+			} else {
+				return 'table-warning';
+			}
+		}
+
+		// Function to update the load test results
+		function getLoadTestStartTime() {
+			// Fetch the load test result by start time
+			$.ajax({
+				url: '/api/loadtestresult/getLatestStartTime',
+				method: 'GET',
+				dataType: 'text',  // assuming the data type is text
+				success: function (startTestTime) {
+					console.log('Test start time: ' + startTestTime)
+					localStorage.setItem('startTime', startTestTime);
+				},
+				error: function () {
+					console.error('Error fetching load test results.');
+				}
+			});
+		}
+
+
+
+		// Function to update the table with SOAP transactions data
+		function updateSoapTransactionTable() {
+
+			//getLoadTestStartTime();
+
+			$.ajax({
+				url: '/api/transactions/getLoadTestTransactions?startTime=' + loadTestStartTime, // Update the URL to match your endpoint
+				method: 'GET',
+				dataType: 'json',
+				success: function (data) {
+					// Reverse the order of data to show latest transactions first
+					data.reverse();
+
+					// Clear the table
+					$('#soapTransactionTable tbody').empty();
+
+					// Iterate through the data and append rows to the table
+					$.each(data, function (index, transaction) {
+
+						var formattedTimestamp = formatTimestamp(transaction.soapResponse.timeStamp);
+
+						var actionButton = '<button type="button" class="btn btn-outline-primary" onclick="openDetailsInNewTab(\'' + transaction.msgId + '\')">Get details</button>';
+
+						// Get the background color based on Response Status and Response Type Code
+						var rowBackgroundColor = getRowBackgroundColor(transaction.soapResponse.responseStatus, transaction.soapResponse.responseTypeCode);
+
+						$('#soapTransactionTable tbody').append(
+							'<tr class="' + rowBackgroundColor + '">' +
+							'<td>' + (data.length - index) + '</td>' +
+							'<td>' + formattedTimestamp + '</td>' +
+							'<td>' + transaction.msgId + '</td>' +
+							'<td>' + transaction.soapRequest.interactionId + '</td>' +
+							'<td>' + transaction.soapResponse.responseStatus + '</td>' +
+							'<td>' + transaction.soapResponse.responseTypeCode + '</td>' +
+							'<td>' + transaction.soapResponse.responseTime + '</td>' +
+							'<td>' + actionButton + '</td>' +
+							'</tr>'
+						);
+					});
+				}
+			});
+		}
+
+		// Function to open the details page with the selected Msg ID in a new tab
+		function openDetailsInNewTab(msgId) {
+			var url = '/details?msgId=' + msgId;
+			var win = window.open(url, '_blank');
+			win.focus();
+		}
+
+		// Initial load of the table
+		updateSoapTransactionTable();
+
+		// Refresh the table every 2 seconds
+		setInterval(updateSoapTransactionTable, 2000); // Adjust the interval as needed
+
+		// Function to download data as a CSV file
+		function downloadCSV(csv, filename) {
+			var csvFile;
+			var downloadLink;
+
+			// CSV file
+			csvFile = new Blob([csv], {type: "text/csv"});
+
+			// Download link
+			downloadLink = document.createElement("a");
+
+			// File name
+			downloadLink.download = filename;
+
+			// Create a link to the file
+			downloadLink.href = window.URL.createObjectURL(csvFile);
+
+			// Hide the link
+			downloadLink.style.display = "none";
+
+			// Add the link to the DOM
+			document.body.appendChild(downloadLink);
+
+			// Click the link
+			downloadLink.click();
+		}
+
+		// Function to export the table to CSV
+		function exportTableToCSV(filename) {
+			var csv = [];
+			var rows = document.querySelectorAll("#soapTransactionTable tr");
+
+			for (var i = 0; i < rows.length; i++) {
+				var row = [], cols = rows[i].querySelectorAll("td, th");
+
+				for (var j = 1; j < (cols.length - 1); j++) {
+					row.push(cols[j].innerText);
+				}
+
+				csv.push(row.join(","));
+			}
+
+			// Download CSV file
+			downloadCSV(csv.join("\n"), filename);
+		}
+
+		// Add event listener to the export button
+		document.getElementById("exportButton").addEventListener("click", function () {
+			exportTableToCSV("HIALTestHub_LoadTest-"+loadTestStartTime+"_txns.csv");
+		});
+
+
+
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+
+</body>
+
+</html>

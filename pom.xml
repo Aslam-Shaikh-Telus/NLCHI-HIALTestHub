@@ -27,9 +27,14 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -75,56 +80,10 @@
 		</dependency>
 
 
-		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-		<!--<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.30</version>
-		</dependency>-->
-
-		<!--https://mvnrepository.com/artifact/xml-security/xmlsec -->
-		<!--<dependency>
-			<groupId>xml-security</groupId>
-			<artifactId>xmlsec</artifactId>
-			<version>1.0.5D2</version>
-		</dependency>-->
-
-		<!-- https://mvnrepository.com/artifact/it.svario.xpathapi/xpathapi-jaxp -->
-		<!--<dependency>
-			<groupId>it.svario.xpathapi</groupId>
-			<artifactId>xpathapi-jaxp</artifactId>
-			<version>0.4</version>
-		</dependency>-->
-
-
-		<!-- https://mvnrepository.com/artifact/org.codehaus.xfire/xfire-all -->
-		<!--<dependency>
-			<groupId>org.codehaus.xfire</groupId>
-			<artifactId>xfire-all</artifactId>
-			<version>1.2.6</version>
-		</dependency>-->
-
-		<!-- Apache CXF -->
-		<!--<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-core</artifactId>
-			<version>4.0.2</version>  Use the version you want 
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-bindings-soap</artifactId>
-			<version>4.0.2</version>  Replace with the latest version 
-		</dependency>
-
-		<dependency>
-			<groupId>com.jcabi</groupId>
-			<artifactId>jcabi-xml</artifactId>
-			<version>0.14</version>
-		</dependency>-->
-
 	</dependencies>
 
 	<build>
+		<finalName>HialTestHub</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

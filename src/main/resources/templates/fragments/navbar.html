@@ -1,0 +1,39 @@
+<!-- navbar.html -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary sticky-top" th:fragment="navbar">
+	<div class="container-fluid text-white">
+		<a class="navbar-brand" href="/home">HIALTestHub</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item">
+					<a class="nav-link" href="/sanity">Sanity Test</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/loadtest">Load Test</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
+						data-bs-toggle="dropdown" aria-expanded="false">
+						Support
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li><a class="dropdown-item" href="/endpoint">Endpoint</a></li>
+						<li><a class="dropdown-item" href="#">Test cases</a></li>
+						<li>
+							<hr class="dropdown-divider">
+						</li>
+						<li><a class="dropdown-item" href="/showsoaptransactions" target="_blank">View all transactions</a></li>
+					</ul>
+				</li>
+			</ul>
+			<form class="d-flex flex-row">
+				<a class="navbar-text p-2 fw-normal fst-italic" id="usernameEndpoint" th:href="@{/endpoint}">username@endpointIP</a>
+				<a class="p-2 btn btn-sm btn-outline-danger" type="reset" th:href="@{/logout}">Log Out</a>
+			</form>
+		</div>
+	</div>
+</nav>

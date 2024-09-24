@@ -15,11 +15,28 @@ public class EndpointService {
 	EndpointRespository endpointRepository;
 	
 	public List<Endpoint> getAll() {
+		return endpointRepository.findAll();
+	}
+	
+	public Endpoint getEndpoint() {
 		return endpointRepository.find();
 	}
 
 	public Endpoint findByHostname(String string) {
 		return endpointRepository.findByHostname(string);
+	}
+
+	public void clearEndpointDatabaseDocument() {
+		endpointRepository.deleteAll();
+		
+	}
+
+	public void saveEndpoint(Endpoint endpoint) {
+ 		endpointRepository.save(endpoint);
+	}
+	
+	public void saveEndpointToFile() {
+//		endpointRepository.saveToFile();
 	}
 
 }

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title th:text="${transaction.soapRequest.interactionId + ' ' + transaction.soapRequest.description}">Transaction
+		Details</title>
+	<!-- Include Bootstrap CSS for styling -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="container-fluid">
+		<br>
+		<div>
+			<h1 th:text="${transaction.soapRequest.interactionId + ' - ' + transaction.soapRequest.description}">
+				Transaction
+				Details</h1>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card scrollable-card">
+					<div class="card-header">SOAP Request</div>
+					<div class="card-body">
+						<h5 class="card-title">MsgId</h5>
+						<p th:text="${transaction.soapRequest.msgId}"></p>
+						<h5 class="card-title">Interaction Id</h5>
+						<p th:text="${transaction.soapRequest.interactionId}"></p>
+						<h5 class="card-title">Description</h5>
+						<p th:text="${transaction.soapRequest.description}"></p>
+						<h5 class="card-title">Soap Action</h5>
+						<p th:text="${transaction.soapRequest.soapAction}"></p>
+						<h5 class="card-title">Endpoint URL</h5>
+						<p th:text="${transaction.soapRequest.endpointUrl}"></p>
+						<h5 class="card-title">RequestXml</h5>
+						<textarea class="form-control" th:text="${transaction.soapRequest.requestXml}" rows="10"
+							readonly></textarea>
+						<!-- Add more fields here as needed -->
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="card scrollable-card">
+					<div class="card-header">SOAP Response</div>
+					<div class="card-body">
+						<h5 class="card-title">TimeStamp</h5>
+						<p th:text="${transaction.soapResponse.timeStamp}"></p>
+						<h5 class="card-title">Response Status</h5>
+						<p th:text="${transaction.soapResponse.responseStatus}"></p>
+						<h5 class="card-title">Response MsgId</h5>
+						<p th:text="${transaction.soapResponse.responseMessageId}"></p>
+						<h5 class="card-title">Response RelateTo</h5>
+						<p th:text="${transaction.soapResponse.responseRelateTo}"></p>
+						<h5 class="card-title">Response TypeCode</h5>
+						<p th:text="${transaction.soapResponse.responseTypeCode}"></p>
+						<h5 class="card-title">Response Time</h5>
+						<p th:text="${transaction.soapResponse.responseTime}"></p>
+						<h5 class="card-title">ResponseXml</h5>
+						<textarea class="form-control" th:text="${transaction.soapResponse.responseXml}" rows="10"
+							readonly></textarea>
+						<!-- Add more fields here as needed -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

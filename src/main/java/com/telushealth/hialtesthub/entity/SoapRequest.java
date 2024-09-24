@@ -21,158 +21,161 @@ import com.telushealth.hialtesthub.entity.soaphandler.XMLUtils;
 @org.springframework.data.mongodb.core.mapping.Document
 public class SoapRequest {
 
-	private static final Logger logger = LoggerFactory.getLogger(SoapRequest.class);
-	@Id
-	private String id;
-	private String msgId;
-	private String interactionId;
-	private String description;
-	private String soapAction;
-	private String endpointUrl;
-	private String requestXml;
+    private static final Logger logger = LoggerFactory.getLogger(SoapRequest.class);
 
-	public String getMsgId() {
-		return msgId;
-	}
+    @Id
+    private String id;
+    private String msgId;
+    private String interactionId;
+    private String description;
+    private String soapAction;
+    private String endpointUrl;
+    private String requestXml;
 
-	public String getInteractionId() {
-		return interactionId;
-	}
+    public String getMsgId() {
+        return msgId;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getInteractionId() {
+        return interactionId;
+    }
 
-	public String getSoapAction() {
-		return soapAction;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getEndpointUrl() {
-		return endpointUrl;
-	}
+    public String getSoapAction() {
+        return soapAction;
+    }
 
-	public String getRequestXml() {
-		return requestXml;
-	}
+    public String getEndpointUrl() {
+        return endpointUrl;
+    }
 
-	public SoapRequest() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    public String getRequestXml() {
+        return requestXml;
+    }
 
-	public SoapRequest(String msgId, Endpoint endpoint, TestCase test) {
+    public SoapRequest() {
+        super();
+    }
 
-		this.msgId = msgId;
-		this.interactionId = test.getInteractionId();
-		this.description = test.getDescription();
-		this.soapAction = test.getSoapAction();
-		this.endpointUrl = "http://" + endpoint.getIpAddress() + endpoint.getTestOrprod() + test.getEndpoint();
+    public SoapRequest(String msgId, Endpoint endpoint, TestCase test) {
 
-		try {
-			this.requestXml = generateSoapRequest(msgId, endpoint.getUsername(), endpoint.getPassword(), test.getXml());
-		} catch (Exception e) {
-			logger.error("Error generating SOAP request XML", e);
-		}
-	}
+        this.msgId = msgId;
+        this.interactionId = test.getInteractionId();
+        this.description = test.getDescription();
+        this.soapAction = test.getSoapAction();
+        this.endpointUrl = "http://" + endpoint.getIpAddress() + endpoint.getTestOrprod() + test.getEndpoint();
 
-	private String generateSoapRequest(String msgId, String username, String password, String testXml)
-			throws Exception {
-		logger.info("Service - START: Generating SOAP Request");
+        try {
+            this.requestXml = generateSoapRequest(msgId, endpoint.getUsername(), endpoint.getPassword(), test.getXml());
+        } catch (Exception e) {
+            logger.error(" | {} | Error generating SOAP request XML", msgId, e);
+        }
+    }
 
-		String queryId = UUID.randomUUID().toString().toUpperCase();
-		testXml = XMLUtils.xmlDocumentToString(XMLUtils.stringToXmlDocument(testXml));
-		logger.debug("Imported SOAP XML from testCase:\n{}", XMLUtils.xmlStringToPrettyPrintString(testXml));
+    private String generateSoapRequest(String msgId, String username, String password, String testXml)
+            throws Exception {
+        logger.info(" | {} | Service - START: Generating SOAP Request", msgId);
 
-		String soapXml = updateSoapXmlWithValues(msgId, queryId, username, password, testXml);
+        String queryId = UUID.randomUUID().toString().toUpperCase();
+        testXml = XMLUtils.xmlDocumentToString(XMLUtils.stringToXmlDocument(testXml));
+        logger.debug(" | {} | Imported SOAP XML from testCase:\n{}", msgId, XMLUtils.xmlStringToPrettyPrintString(testXml));
 
-		logger.debug("SoapXML with updated {}, {}, {}, and {}:\n{}", "msgId", "queryId", "username", "password",
-				XMLUtils.xmlStringToPrettyPrintString(soapXml));
+        String soapXml = updateSoapXmlWithValues(msgId, queryId, username, password, testXml);
 
-		Document soapMessage = XMLUtils.stringToXmlDocument(soapXml);
-		Document soapBody = extractElementFromDocument("soap:Body", soapMessage);
-		String soapBodyString = XMLUtils.xmlDocumentToString(soapBody);
+        logger.debug(" | {} | SoapXML with updated {}, {}, {}, and {}:\n{}", msgId, "msgId", "queryId", "username", "password",
+                XMLUtils.xmlStringToPrettyPrintString(soapXml));
 
-		logger.info("Extracted SOAP Body:\n{}", soapBodyString);
+        Document soapMessage = XMLUtils.stringToXmlDocument(soapXml);
+        Document soapBody = extractElementFromDocument("soap:Body", soapMessage);
+        String soapBodyString = XMLUtils.xmlDocumentToString(soapBody);
 
-		XMLDigest soapDigest = new XMLDigest(msgId, soapBodyString);
-		soapDigest.digestBody();
-		String digestValue = soapDigest.getDigestValue();
-		String canonicalBodyString = soapDigest.getCanonicalString();
+        logger.info(" | {} | Extracted SOAP Body:\n{}", msgId, soapBodyString);
 
-		Document canonicalBody = XMLUtils.stringToXmlDocument(canonicalBodyString);
-		Document signedInfo = extractElementFromDocument("ds:SignedInfo", soapMessage);
+        XMLDigest soapDigest = new XMLDigest(msgId, soapBodyString);
+        soapDigest.digestBody();
+        String digestValue = soapDigest.getDigestValue();
+        String canonicalBodyString = soapDigest.getCanonicalString();
 
-		logger.debug("Service - START: Updating SignedInfo with DigestValue");
-		String updatedSignedInfoString = XMLUtils.xmlDocumentToFormattedString(
-				XMLUtils.updateValueInXMLDocument(signedInfo, "ds:DigestValue", digestValue));
-		logger.debug("Service - END: Updating SignedInfo with DigestValue");
+        Document canonicalBody = XMLUtils.stringToXmlDocument(canonicalBodyString);
+        Document signedInfo = extractElementFromDocument("ds:SignedInfo", soapMessage);
 
-		XMLSigner sig = new XMLSigner(msgId, password, updatedSignedInfoString);
-		sig.signLoadMsg();
-		String signatureValue = sig.getSignatureValue();
+        logger.debug(" | {} | Service - START: Updating SignedInfo with DigestValue", msgId);
+        String updatedSignedInfoString = XMLUtils.xmlDocumentToFormattedString(
+                XMLUtils.updateValueInXMLDocument(signedInfo, "ds:DigestValue", digestValue));
+        logger.debug(" | {} | Service - Updated SignedInfo with DigestValue:\n{}", msgId, updatedSignedInfoString);
+        logger.debug(" | {} | Service - END: Updating SignedInfo with DigestValue", msgId);
 
-		Document soapRequest = soapMessage;
-		String soapRequestString = XMLUtils.xmlDocumentToString(soapRequest);
-		logger.debug("SOAP Message:\n{}", soapRequestString);
+        XMLSigner sig = new XMLSigner(msgId, password, updatedSignedInfoString);
+        sig.signLoadMsg();
+        String signatureValue = sig.getSignatureValue();
 
-		logger.debug("Service - START: Updating SOAP Message with Canonical SOAP Body");
-		soapRequest = XMLUtils.replaceNodeInXmlDocument(soapRequest, "soap:Body", canonicalBody);
-		logger.debug("Service - END: Updating SOAP Message with Canonical SOAP Body");
+        Document soapRequest = soapMessage;
+        String soapRequestString = XMLUtils.xmlDocumentToString(soapRequest);
+        logger.debug(" | {} | SOAP Message:\n{}", msgId, soapRequestString);
 
-		logger.debug("Service - START: Updating SOAP Message with SignedInfo");
-		soapRequest = XMLUtils.replaceNodeInXmlDocument(soapRequest, "ds:SignedInfo",
-				XMLUtils.stringToXmlDocument(updatedSignedInfoString));
-		logger.debug("Service - END: Updating SOAP Message with SignedInfo");
+        logger.debug(" | {} | Service - START: Updating SOAP Message with Canonical SOAP Body", msgId);
+        logger.debug(" | {} | SOAP Request XML before canonicalBody:\n{}", msgId, soapRequest);        
+        soapRequest = XMLUtils.replaceNodeInXmlDocument(soapRequest, "soap:Body", canonicalBody);
+        logger.debug(" | {} | SOAP Request XML after canonicalBody:\n{}", msgId, soapRequest); 
+        logger.debug(" | {} | Service - END: Updating SOAP Message with Canonical SOAP Body", msgId);
 
-		soapRequest = XMLUtils.updateValueInXMLDocument(soapRequest, "ds:SignatureValue", signatureValue);
-		soapXml = XMLUtils.xmlDocumentToString(soapRequest);
+        logger.debug(" | {} | Service - START: Updating SOAP Message with SignedInfo", msgId);
+        soapRequest = XMLUtils.replaceNodeInXmlDocument(soapRequest, "ds:SignedInfo",
+                XMLUtils.stringToXmlDocument(updatedSignedInfoString));
+        logger.debug(" | {} | Service - END: Updating SOAP Message with SignedInfo", msgId);
 
-		logger.info("Final SOAP Request XML:\n{}", soapXml);
-		logger.info("Service - END: Generating SOAP Request");
+        soapRequest = XMLUtils.updateValueInXMLDocument(soapRequest, "ds:SignatureValue", signatureValue);
+        soapXml = XMLUtils.xmlDocumentToString(soapRequest);
 
-		return soapXml;
-	}
+        logger.info(" | {} | Final SOAP Request XML:\n{}", msgId, soapXml);
+        logger.info(" | {} | Service - END: Generating SOAP Request", msgId);
 
-	private Document extractElementFromDocument(String elementName, Document doc) throws Exception {
-		Element element = (Element) doc.getElementsByTagName(elementName).item(0);
+        return soapXml;
+    }
 
-		if (element != null) {
-			Document elementDoc = XMLUtils.createNewDocument();
-			Node importedNode = elementDoc.importNode(element, true);
-			elementDoc.appendChild(importedNode);
-			return elementDoc;
-		} else {
-			throw new IOException(elementName + " not found in the message.");
-		}
-	}
+    private Document extractElementFromDocument(String elementName, Document doc) throws Exception {
+        Element element = (Element) doc.getElementsByTagName(elementName).item(0);
 
-	private String updateSoapXmlWithValues(String msgId, String queryId, String username, String password,
-			String testXml) {
-		testXml = testXml.replace("${#TestCase#username}", username);
-		testXml = testXml.replace("${#TestCase#digestPassword}", generateDigestPassword(password));
-		testXml = testXml.replace("${#TestCase#MSG_ID}", msgId);
-		testXml = testXml.replace("${#TestCase#queryid}", queryId);
-		return testXml;
-	}
+        if (element != null) {
+            Document elementDoc = XMLUtils.createNewDocument();
+            Node importedNode = elementDoc.importNode(element, true);
+            elementDoc.appendChild(importedNode);
+            return elementDoc;
+        } else {
+            throw new IOException(elementName + " not found in the message.");
+        }
+    }
 
-	public String generateDigestPassword(String password) {
-		try {
-			logger.debug("Service - START: Generate Digest Password");
-			byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
+    private String updateSoapXmlWithValues(String msgId, String queryId, String username, String password,
+            String testXml) {
+        testXml = testXml.replace("${#TestCase#username}", username);
+        testXml = testXml.replace("${#TestCase#digestPassword}", generateDigestPassword(password));
+        testXml = testXml.replace("${#TestCase#MSG_ID}", msgId);
+        testXml = testXml.replace("${#TestCase#queryid}", queryId);
+        return testXml;
+    }
 
-			MessageDigest sha = MessageDigest.getInstance("SHA-1");
-			sha.reset();
-			sha.update(passwordBytes);
-			byte[] passwordDigest = sha.digest();
+    public String generateDigestPassword(String password) {
+        try {
+            logger.debug(" | {} | Service - START: Generate Digest Password", msgId);
+            byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
-			String passwordDigestString = Base64.getEncoder().encodeToString(passwordDigest).trim();
-			logger.info("Password Digest: " + passwordDigestString);
+            MessageDigest sha = MessageDigest.getInstance("SHA-1");
+            sha.reset();
+            sha.update(passwordBytes);
+            byte[] passwordDigest = sha.digest();
 
-			logger.debug("Service - END: Generate Digest Password");
-			return passwordDigestString;
-		} catch (NoSuchAlgorithmException e) {
-			logger.error("SHA-1 algorithm not available.", e);
-			throw new RuntimeException("SHA-1 algorithm not available.", e);
-		}
-	}
+            String passwordDigestString = Base64.getEncoder().encodeToString(passwordDigest).trim();
+            logger.info(" | {} | Password Digest: {}", msgId, passwordDigestString);
+
+            logger.debug(" | {} | Service - END: Generate Digest Password", msgId);
+            return passwordDigestString;
+        } catch (NoSuchAlgorithmException e) {
+            logger.error(" | {} | SHA-1 algorithm not available.", msgId, e);
+            throw new RuntimeException("SHA-1 algorithm not available.", e);
+        }
+    }
 }
