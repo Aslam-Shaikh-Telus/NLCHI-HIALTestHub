@@ -105,6 +105,7 @@ public class SoapRequest {
         logger.debug(" | {} | Service - START: Updating SignedInfo with DigestValue", msgId);
         String updatedSignedInfoString = XMLUtils.xmlDocumentToFormattedString(
                 XMLUtils.updateValueInXMLDocument(signedInfo, "ds:DigestValue", digestValue));
+        logger.debug(" | {} | Service - Updated SignedInfo with DigestValue:\n{}", msgId, updatedSignedInfoString);
         logger.debug(" | {} | Service - END: Updating SignedInfo with DigestValue", msgId);
 
         XMLSigner sig = new XMLSigner(msgId, password, updatedSignedInfoString);
@@ -116,7 +117,9 @@ public class SoapRequest {
         logger.debug(" | {} | SOAP Message:\n{}", msgId, soapRequestString);
 
         logger.debug(" | {} | Service - START: Updating SOAP Message with Canonical SOAP Body", msgId);
+        logger.debug(" | {} | SOAP Request XML before canonicalBody:\n{}", msgId, soapRequest);        
         soapRequest = XMLUtils.replaceNodeInXmlDocument(soapRequest, "soap:Body", canonicalBody);
+        logger.debug(" | {} | SOAP Request XML after canonicalBody:\n{}", msgId, soapRequest); 
         logger.debug(" | {} | Service - END: Updating SOAP Message with Canonical SOAP Body", msgId);
 
         logger.debug(" | {} | Service - START: Updating SOAP Message with SignedInfo", msgId);

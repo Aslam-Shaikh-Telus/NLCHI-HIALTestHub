@@ -89,7 +89,7 @@
 
 					// Change the button to "Re-run" and update the onclick event
 					$(buttonElement).text('Re-run');
-					$(buttonElement).attr('onclick', 'reRunTest(\'' + interactionId + '\', this)');
+					$(buttonElement).attr('onclick', 'event.stopPropagation(); reRunTest(\'' + interactionId + '\', this)');
 				},
 				error: function () {
 					// Display error message in the card body
@@ -139,12 +139,12 @@
 				var cardHtml =
 					'<div class="col">' +
 					'<div class="card border-dark mb-3" id="card_' + testCase.interactionId + '">' +
-					'<div class="card-header d-flex justify-content-between">' +
+					'<div class="card-header d-flex justify-content-between" onclick="openTestCasePage(\'' + testCase.interactionId + '\')">' +
 					'<span>' + testCase.interactionId + ' - ' + testCase.description + '</span>' +
 					'<div class="spinner-border text-primary" role="status" id="' + spinnerId + '" style="display: none;">' +
 					'<span class="visually-hidden">Loading...</span>' +
 					'</div>' +
-					'<button type="button" class="btn btn-primary" onclick="runTest(\'' + testCase.interactionId + '\', this)">Run</button>' +
+					'<button type="button" class="btn btn-primary" onclick="event.stopPropagation(); runTest(\'' + testCase.interactionId + '\', this)">Run</button>' +
 					'</div>' +
 					'<div class="card-body" id="' + cardBodyId + '"></div>' +
 					'</div>' +
@@ -176,6 +176,13 @@
 		// Function to open the details page with the selected Msg ID in a new tab
 		function openDetailsInNewTab(msgId) {
 			var url = '/details?msgId=' + msgId;
+			var win = window.open(url, '_blank');
+			win.focus();
+		}
+		
+		// Function to open the testCase page with the given interactionId
+		function openTestCasePage(interactionId) {
+			var url = '/testCase?interactionId=' + interactionId;
 			var win = window.open(url, '_blank');
 			win.focus();
 		}

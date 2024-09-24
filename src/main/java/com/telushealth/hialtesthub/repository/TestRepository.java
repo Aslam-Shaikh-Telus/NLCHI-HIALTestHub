@@ -38,19 +38,23 @@ public class TestRepository implements CommandLineRunner {
 		// Load JSON data from file
 		List<TestCase> testCases = null;
 		try {
-
-//			
-//			ClassPathResource resource = new ClassPathResource(testCaseJsonFile);
+			// Load the resource file
 			Resource resource = resourceLoader.getResource("file:" + testCaseJsonFile);
 
+			// Map JSON file to list of TestCase objects
 			testCases = objectMapper.readValue(resource.getInputStream(), new TypeReference<List<TestCase>>() {
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		// Insert data into MongoDB
-		mongoTemplate.insertAll(testCases);
+		// Delete all existing test cases in MongoDB
+		mongoTemplate.remove(new Query(), TestCase.class);
+
+		// Insert new test cases into MongoDB
+		if (testCases != null && !testCases.isEmpty()) {
+			mongoTemplate.insertAll(testCases);
+		}
 	}
 
 	public List<TestCase> find() {

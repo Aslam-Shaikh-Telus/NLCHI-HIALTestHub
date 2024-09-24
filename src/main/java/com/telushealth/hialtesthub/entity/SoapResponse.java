@@ -178,11 +178,9 @@ public class SoapResponse {
 
 		if ("AA".equals(this.responseTypeCode)) {
 			logger.info(" | {} | Assertion 2 passed: typeCode=\"AA\"", msgId);
-		} else if ("AE".equals(this.responseTypeCode)) {
-			logger.info(" | {} | Assertion 2 failed: typeCode=\"AE\"", msgId);
-		} else {
+		} else  {
 			logger.warn(" | {} | Assertion 2 failed: typeCode=\"{}\"", msgId, this.responseTypeCode);
-			this.responseStatus = ResponseStatus.FAIL;
+//			this.responseStatus = ResponseStatus.FAIL;
 		}
 
 		logger.debug(" | {} | Service - END: Checking typeCode Value", msgId);

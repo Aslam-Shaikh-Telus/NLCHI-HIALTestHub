@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title th:text="${testCase.interactionId + ' ' + testCase.description}">Test Case</title>
+	<!-- Include Bootstrap CSS for styling -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="container-fluid">
+		<br>
+		<div>
+			<h1 th:text="${testCase.interactionId + ' - ' + testCase.description}">
+				Transaction Details</h1>
+		</div>
+		<br>
+		<div class="container-fluid p-3">
+			<div class="row">
+				<div class="col">
+					<div class="card scrollable-card">
+						<div class="card-body">
+							<h5 class="card-title">Soap Action</h5>
+							<p th:text="${testCase.soapAction}"></p>
+							<h5 class="card-title">Endpoint URL</h5>
+							<p th:text="${testCase.endpoint}"></p>
+							<h5 class="card-title">TestXml</h5>
+							<div>
+								<textarea id="xmlTextArea" class="form-control" rows="10" readonly
+									th:text="${testCase.xml}"></textarea>
+								<small class="form-text text-muted">Click the XML above to edit.</small>
+							</div>
+							<br>
+							<button type="button" class="btn btn-primary" onclick="runTest()">Run Test</button>
+							<div class="spinner-border text-primary" id="spinner" role="status" style="display: none;">
+								<span class="sr-only">Loading...</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container-fluid" id="transactionContainer" style="display: none;">
+
+		</div>
+	</div>
+
+	<script th:inline="javascript">
+		function showSpinner() {
+			document.getElementById('spinner').style.display = 'inline-block';
+		}
+
+		function hideSpinner() {
+			document.getElementById('spinner').style.display = 'none';
+		}
+
+		function runTest(buttonElement) {
+			var testCase = /*[[${testCase}]]*/ {};
+			testCase.xml = document.getElementById('xmlTextArea').value; // Update testCase.xml with the edited content
+			showSpinner();
+
+			fetch('/api/runtest', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(testCase)
+			})
+				.then(response => response.json())
+				.then(transaction => {
+					// Check if transaction is null
+					if (transaction) {
+						var transactionHtml = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card scrollable-card">
+                                    <div class="card-header">SOAP Request</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">MsgId</h5>
+                                        <p>${transaction.soapRequest.msgId}</p>
+                                        <h5 class="card-title">Interaction Id</h5>
+                                        <p>${transaction.soapRequest.interactionId}</p>
+                                        <h5 class="card-title">Description</h5>
+                                        <p>${transaction.soapRequest.description}</p>
+                                        <h5 class="card-title">Soap Action</h5>
+                                        <p>${transaction.soapRequest.soapAction}</p>
+                                        <h5 class="card-title">Endpoint URL</h5>
+                                        <p>${transaction.soapRequest.endpointUrl}</p>
+                                        <h5 class="card-title">RequestXml</h5>
+                                        <textarea class="form-control" rows="10"
+                                            readonly>${transaction.soapRequest.requestXml}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card scrollable-card">
+                                    <div class="card-header">SOAP Response</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">TimeStamp</h5>
+                                        <p>${transaction.soapResponse.timeStamp}</p>
+                                        <h5 class="card-title">Response Status</h5>
+                                        <p>${transaction.soapResponse.responseStatus}</p>
+                                        <h5 class="card-title">Response MsgId</h5>
+                                        <p>${transaction.soapResponse.responseMessageId}</p>
+                                        <h5 class="card-title">Response RelateTo</h5>
+                                        <p>${transaction.soapResponse.responseRelateTo}</p>
+                                        <h5 class="card-title">Response TypeCode</h5>
+                                        <p>${transaction.soapResponse.responseTypeCode}</p>
+                                        <h5 class="card-title">Response Time</h5>
+                                        <p>${transaction.soapResponse.responseTime}</p>
+                                        <h5 class="card-title">ResponseXml</h5>
+                                        <textarea class="form-control" rows="10"
+                                            readonly>${transaction.soapResponse.responseXml}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+					} else {
+						var transactionHtml = '<p class="text-danger">Error retrieving SOAP transaction data.</p>';
+					}
+
+					// Update the transactionContainer content
+					document.getElementById('transactionContainer').innerHTML = transactionHtml;
+					document.getElementById('transactionContainer').style.display = 'block'; // Show the container
+
+					// Hide the spinner
+					hideSpinner();
+				})
+				.catch(error => {
+					console.error('Error:', error);
+
+					// Display error message in the card body
+					var transactionHtml = '<p class="text-danger">Error retrieving SOAP transaction data.</p>';
+					document.getElementById('transactionContainer').innerHTML = transactionHtml;
+					document.getElementById('transactionContainer').style.display = 'block'; // Show the container
+
+					// Hide the spinner
+					hideSpinner();
+				});
+		}
+
+		// Function to make XML textarea editable
+		document.getElementById('xmlTextArea').onclick = function () {
+			this.readOnly = false;
+		};
+	</script>
+
+</body>
+
+</html>

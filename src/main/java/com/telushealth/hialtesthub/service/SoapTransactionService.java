@@ -77,4 +77,9 @@ public class SoapTransactionService {
 		return reportStatsList;
 	}
 
+	public List<SoapTransaction> findAllSoapTransactionsByStartTime(String startTime) {
+		// TODO Auto-generated method stub
+		return soapTransactionRepository.getSoapTransactionsByStartTime(startTime);
+	}
+
 }

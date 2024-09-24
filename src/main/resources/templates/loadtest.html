@@ -43,6 +43,18 @@
 		</form>
 	</div>
 	<br>
+	<div class="container-fluid" id="loadRunnerContainer" style="display: none;">
+		<form class="d-flex flex-row">
+			<span class="pe-3">Endpoint:</span>
+			<span id="usernameEndpoint2">username@endpointIP</span>
+		</form>
+		<form class="d-flex flex-row">
+			<span class="pe-2">Start Time:</span>
+			<span id="startTime"></span>
+		</form>
+		<button class="btn my-2 btn-outline-primary" onclick="openDetailsInNewTab()">Get details</button>
+
+	</div>
 
 	<div class="container-fluid">
 		<table class="table table-hover table-bordered">
@@ -67,8 +79,8 @@
 
 	<!-- Report Stats Table -->
 	<div class="container-fluid" id="reportStatsContainer" style="display: none;">
-		<div class="d-flex flex-row">
-			<h4>Report: </h4>
+		<div>
+			<h4>Report:</h4>
 		</div>
 		<table class="table table-sm table-bordered d-inline container-flui">
 			<thead class="table-light">
@@ -101,6 +113,7 @@
 						var endpoint = endpoints[0];
 						var usernameEndpoint = endpoint.username + '@' + endpoint.ipAddress;
 						$('#usernameEndpoint').text(usernameEndpoint);
+						$('#usernameEndpoint2').text(usernameEndpoint);
 					}
 				},
 				error: function () {
@@ -126,6 +139,9 @@
 				// Display the report stats table
 				$('#reportStatsContainer').hide();
 
+				// Display the Load test details
+				$('#loadRunnerContainer').show();
+
 				// Disable the Run button and enable the Stop button
 				$('#threads').prop('disabled', true);
 				$('#timelimit').prop('disabled', true);
@@ -146,6 +162,8 @@
 
 							// Display the report stats table
 							$('#reportStatsContainer').show();
+
+							$('#startTime').text(loadTestResult.startTestTime);
 
 							// Fetch and display report stats
 							updateReportStats(loadTestResult.startTestTime, loadTestResult.endTestTime);
@@ -222,8 +240,11 @@
 					// Display the report stats table
 					$('#reportStatsContainer').show();
 
+
+					$('#startTime').text(localStorage.getItem('startTime'));
+
 					// Fetch and display report stats
-					updateReportStats(localStorage.getItem(startTime), localStorage.getItem(loadTestResult.endTestTime));
+					updateReportStats(localStorage.getItem('startTime'), localStorage.getItem(loadTestResult.endTestTime));
 
 					localStorage.setItem('loadTestRunning', false);
 
@@ -279,6 +300,10 @@
 						// Display the report stats table
 						$('#reportStatsContainer').show();
 
+
+
+						$('#startTime').text(loadTestResult.startTestTime);
+
 						// Fetch and display report stats
 						updateReportStats(loadTestResult.startTestTime, loadTestResult.endTestTime);
 					}
@@ -293,6 +318,8 @@
 		function updateTable(loadTestResult) {
 			// Clear existing rows
 			$('#loadTestResultsContainer').empty();
+
+			$('#startTime').text(loadTestResult.startTestTime);
 
 			localStorage.setItem('loadTestResult', loadTestResult);
 
@@ -373,6 +400,8 @@
 
 		// Function to update the report stats table
 		function updateReportStats(startTestTime, endTestTime) {
+
+
 			$.ajax({
 				url: '/api/loadtestresult/getReportStats',
 				method: 'GET',
@@ -389,6 +418,8 @@
 					console.error('Error fetching report stats.');
 				}
 			});
+
+			updateLoadTestResults(startTestTime);
 		}
 
 		// Function to update the report stats table
@@ -456,6 +487,15 @@
 				}
 			}
 		}
+
+		// Function to open the details page with the selected Msg ID in a new tab
+		function openDetailsInNewTab() {
+			getLoadTestStartTime();
+			var url = '/getloadtestdetails?startTime=' + localStorage.getItem('startTime');
+			var win = window.open(url, '_blank');
+			win.focus();
+		}
+
 
 		// Call the function to check the load test state when the page loads
 		//$(document).ready(function () {

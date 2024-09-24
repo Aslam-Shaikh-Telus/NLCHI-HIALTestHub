@@ -57,7 +57,7 @@ public class XMLSigner {
 			key20 = sha.digest(key20);
 			byte[] key16 = new byte[16];
 			System.arraycopy(key20, 0, key16, 0, 16);
-			logger.debug(" | {} | Key: {}", msgID, new String (key16));
+			logger.debug(" | {} | Key: {}", msgID, key16);
 			logger.debug(" | {} | Service - END: Generating Key", msgID);
 			return key16;
 		} catch (NoSuchAlgorithmException e) {
@@ -72,7 +72,7 @@ public class XMLSigner {
 			
 			this.secretKey = generateKey(this.password);
 			SecretKeySpec secKeySpec = new SecretKeySpec(this.secretKey, "AES");
-			logger.debug(" | {} | SignedInfo is :\n{}", msgID, Arrays.toString(this.xmlString.getBytes()));
+			logger.debug(" | {} | SignedInfo is :\n{}", msgID, this.xmlString);
 			
 			String modifiedInputString = this.xmlString.replaceAll("\r", "");
 			byte[] modifiedInputFile = modifiedInputString.getBytes(StandardCharsets.UTF_8);
@@ -86,9 +86,9 @@ public class XMLSigner {
 					"http://www.w3.org/2000/09/xmldsig#hmac-sha1", 256);
 			sigAlgorithmA.initSign(secKeySpec);
 			sigAlgorithmA.update(modifiedInputFile);
-			byte[] signatureValue = sigAlgorithmA.sign();
+			byte[] signatureValueByte = sigAlgorithmA.sign();
 			
-			String signatureValueString = Base64.getEncoder().encodeToString(signatureValue);
+			String signatureValueString = Base64.getEncoder().encodeToString(signatureValueByte);
 			logger.info(" | {} | Signature Value: {}", msgID, signatureValueString);
 			
 			this.signatureValue = signatureValueString;

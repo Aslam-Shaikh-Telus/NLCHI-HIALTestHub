@@ -242,7 +242,7 @@
 		function getRowBackgroundColor(responseStatus, responseTypeCode) {
 			if (responseStatus === 'FAIL') {
 				return 'table-danger';
-			} else if (responseStatus === 'PASSED' && responseTypeCode === 'AA') {
+			} else if (responseStatus === 'PASS' && responseTypeCode === 'AA') {
 				return 'table-success';
 			} else {
 				return 'table-warning';

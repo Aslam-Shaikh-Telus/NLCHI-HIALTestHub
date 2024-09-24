@@ -97,4 +97,10 @@ public class SoapTransactionRepository {
 
 	}
 
+	public List<SoapTransaction> getSoapTransactionsByStartTime(String startTime) {
+		Query query = new Query(Criteria.where("soapResponse.timeStamp").gte(startTime));
+		
+		return mongoTemplate.find(query, SoapTransaction.class);
+	}
+
 }
