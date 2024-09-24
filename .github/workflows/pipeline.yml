@@ -48,14 +48,18 @@ jobs:
         with:
           name: hialtesthub
 
+      - name: Start SSH Agent and Add Key
+        run: |
+          eval $(ssh-agent -s)  # Start the SSH agent
+          echo "${{ secrets.SERVER_SSH_KEY }}" | tr -d '\r' | ssh-add -  # Add the private key
+        env:
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+
       - name: Deploy to Linux server
         env:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
-
         run: |
-          echo "${{ secrets.SERVER_SSH_KEY }}" | ssh-add -
-          scp -i ~/.ssh/id_rsa ./hialtesthub.jar $SERVER_USER@$SERVER_IP:/home/$SERVER_USER/app/hialtesthub.jar
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SERVER_USER@$SERVER_IP "sudo systemctl stop hialtesthub"
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SERVER_USER@$SERVER_IP "sudo systemctl start hialtesthub"
+          scp -o StrictHostKeyChecking=no ./hialtesthub.jar $SERVER_USER@$SERVER_IP:/home/$SERVER_USER/app/hialtesthub.jar
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "sudo systemctl stop hialtesthub"
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "sudo systemctl start hialtesthub"
