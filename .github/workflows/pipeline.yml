@@ -60,6 +60,7 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_IP: ${{ secrets.SERVER_IP }}
         run: |
-          scp -o StrictHostKeyChecking=no ./hialtesthub.jar $SERVER_USER@$SERVER_IP:/home/$SERVER_USER/app/hialtesthub.jar
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "sudo systemctl stop hialtesthub"
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "sudo systemctl start hialtesthub"
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP
+          scp -v -o StrictHostKeyChecking=no ./hialtesthub.jar $SERVER_USER@$SERVER_IP:/home/$SERVER_USER/app/hialtesthub.jar
+          
+          
