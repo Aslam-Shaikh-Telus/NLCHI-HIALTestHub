@@ -60,9 +60,5 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_IP: ${{ secrets.SERVER_IP }}
         run: |
-          echo "SERVER_IP: $SERVER_IP"
-          echo "SERVER_USER: $SERVER_USER"
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP
-          scp -v -o StrictHostKeyChecking=no ./hialtesthub.jar $SERVER_USER@$SERVER_IP:/home/$SERVER_USER/app/hialtesthub.jar
-          
-          
+          echo "Testing SSH connection to $SERVER_USER@$SERVER_IP"
+          ssh -o StrictHostKeyChecking=no -v $SERVER_USER@$SERVER_IP "echo Connection successful"
