@@ -103,7 +103,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use GITHUB_TOKEN as an environment variable
       with:
-        upload_url: ${{ env.UPLOAD_URL }}
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: HIALTestHub.tar.gz
         asset_name: HIALTestHub-${{ env.version }}.tar.gz
         asset_content_type: application/gzip
