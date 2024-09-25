@@ -35,7 +35,7 @@ jobs:
     # Create HIALTestHub.tar.gz package while excluding unwanted folders
     - name: Create HIALTestHub.tar.gz package
       run: |
-        tar --exclude='unwanted_folder_1' --exclude='unwanted_folder_2' -czf HIALTestHub.tar.gz bin/ config/ data/ pom.xml target/*.jar CHANGELOG.md
+        tar --exclude='.github/' --exclude='src/' -czf HIALTestHub.tar.gz bin/ config/ data/ pom.xml target/*.jar
 
     # Upload the HIALTestHub.tar.gz as an artifact
     - name: Upload build artifact
