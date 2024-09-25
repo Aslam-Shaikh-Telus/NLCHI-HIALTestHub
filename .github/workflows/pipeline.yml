@@ -44,19 +44,32 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for GitHub API access
 
-    # Commit updated CHANGELOG.md to the repository
+    # Create a new branch, commit the updated CHANGELOG.md, and push to GitHub
     - name: Commit updated CHANGELOG.md
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout -b update-changelog
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
         git add CHANGELOG.md
         git commit -m "chore: update CHANGELOG.md for release ${{ env.version }}"
-        git push origin main
+        git push -u origin update-changelog
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # Create a Pull Request for the changelog update
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        base: main
+        branch: update-changelog
+        title: "Update CHANGELOG.md for release ${{ env.version }}"
+        body: "This pull request updates the CHANGELOG.md file."
 
     # Create HIALTestHub.tar.gz package while excluding unwanted folders, include CHANGELOG.md
     - name: Create HIALTestHub.tar.gz package
       run: |
-        tar -czf HIALTestHub.tar.gz bin/ config/ data/ pom.xml target/*.jar CHANGELOG.md
+        tar --exclude='unwanted_folder_1' --exclude='unwanted_folder_2' -czf HIALTestHub.tar.gz bin/ config/ data/ pom.xml target/*.jar CHANGELOG.md
 
     # Upload the HIALTestHub.tar.gz as an artifact
     - name: Upload build artifact
