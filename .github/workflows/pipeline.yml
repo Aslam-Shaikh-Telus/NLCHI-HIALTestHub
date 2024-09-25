@@ -53,18 +53,10 @@ jobs:
         
         echo "Available tags after fetch:"
         git tag
-        
-        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null)
-        
-        if [ -z "$latest_tag" ]; then
-          echo "No reachable tag found from the current commit. Checking available tags..."
-          latest_tag=$(git tag | sort -V | tail -n 1)
-          echo "Latest tag from repository: $latest_tag"
-        else
-          echo "Latest tag: $latest_tag"
-        fi
-        
-        
+              
+        latest_tag=$(git tag | sort -V | tail -n 1)
+        echo "Latest tag from repository: $latest_tag"
+       
         if [ -z "$latest_tag" ]; then
           latest_tag="v0.0.0"
         fi
