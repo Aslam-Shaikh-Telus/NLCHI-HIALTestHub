@@ -42,9 +42,9 @@ jobs:
       run: |
         conventional-changelog -p angular -i CHANGELOG.md -s
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for GitHub API access
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # Create a new branch, commit the updated CHANGELOG.md, and push to GitHub
+    # Commit the updated CHANGELOG.md to a new branch
     - name: Commit updated CHANGELOG.md
       run: |
         git checkout -b update-changelog
@@ -66,10 +66,14 @@ jobs:
         title: "Update CHANGELOG.md for release ${{ env.version }}"
         body: "This pull request updates the CHANGELOG.md file."
 
-    # Create HIALTestHub.tar.gz package while excluding unwanted folders, include CHANGELOG.md
+    # **Ensure the repository is in sync with the `update-changelog` branch before creating the tarball**
+    - name: Checkout update-changelog branch
+      run: git checkout update-changelog
+
+    # Create HIALTestHub.tar.gz package while excluding unwanted folders
     - name: Create HIALTestHub.tar.gz package
       run: |
-        tar --exclude='unwanted_folder_1' --exclude='unwanted_folder_2' -czf HIALTestHub.tar.gz bin/ config/ data/ pom.xml target/*.jar CHANGELOG.md
+        tar --exclude='./github/' --exclude='src/' -czf HIALTestHub.tar.gz bin/ config/ data/ pom.xml target/*.jar CHANGELOG.md
 
     # Upload the HIALTestHub.tar.gz as an artifact
     - name: Upload build artifact
