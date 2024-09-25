@@ -56,13 +56,18 @@ jobs:
         echo "New version: $new_version"
         echo "version=$new_version" >> $GITHUB_ENV
 
-    # Tag the release
+    # Tag the release only if the tag does not exist
     - name: Tag the release
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git tag ${{ env.version }} -m "Release ${{ env.version }}"
-        git push origin ${{ env.version }}
+        git fetch --tags  # Ensure the latest tags are fetched
+        if git rev-parse "$new_version" >/dev/null 2>&1; then
+          echo "Tag $new_version already exists. Skipping tag creation."
+        else
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ env.version }} -m "Release ${{ env.version }}"
+          git push origin ${{ env.version }}
+        fi
 
     # Create a GitHub Release and upload the HIALTestHub.tar.gz package as an asset
     - name: Create GitHub Release
