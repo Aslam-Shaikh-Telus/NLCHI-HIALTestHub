@@ -95,7 +95,7 @@ jobs:
 
     # Capture upload_url to environment file
     - name: Set upload URL
-      run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
+      run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $UPLOAD_URL
 
     # Upload HIALTestHub.tar.gz as the release asset
     - name: Upload Release Asset
