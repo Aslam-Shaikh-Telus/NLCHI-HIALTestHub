@@ -94,10 +94,6 @@ jobs:
         draft: false
         prerelease: false
 
-    # Capture upload_url to environment file
-    - name: Set upload URL
-      run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
-
     # Upload HIALTestHub.tar.gz as the release asset
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
@@ -105,7 +101,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use GITHUB_TOKEN as an environment variable
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: HIALTestHub.tar.gz
+        asset_path: package.tar.gz
         asset_name: HIALTestHub-${{ env.version }}.tar.gz
         asset_content_type: application/gzip
 
