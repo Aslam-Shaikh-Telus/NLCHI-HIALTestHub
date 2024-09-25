@@ -82,6 +82,7 @@ jobs:
 
     # Create a GitHub Release and upload the HIALTestHub.tar.gz package as an asset
     - name: Create GitHub Release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use GITHUB_TOKEN as an environment variable
