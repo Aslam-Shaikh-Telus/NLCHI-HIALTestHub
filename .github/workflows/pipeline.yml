@@ -10,9 +10,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]  # Trigger on push to the main branch
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]  # Optional: Trigger on pull requests to the main branch
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -32,11 +32,78 @@ jobs:
     - name: Build with Maven
       run: mvn clean install
 
+    # Install conventional-changelog-cli to generate CHANGELOG.md
+    - name: Install conventional-changelog-cli
+      run: |
+        npm install -g conventional-changelog-cli
+
+    # Generate/Update CHANGELOG.md based on conventional commits
+    - name: Generate changelog
+      run: |
+        conventional-changelog -p angular -i CHANGELOG.md -s
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for GitHub API access
+
+    # Commit updated CHANGELOG.md to the repository
+    - name: Commit updated CHANGELOG.md
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add CHANGELOG.md
+        git commit -m "chore: update CHANGELOG.md for release ${{ env.version }}"
+        git push origin main
+
+    # Create HIALTestHub.tar.gz package while excluding unwanted folders, include CHANGELOG.md
+    - name: Create HIALTestHub.tar.gz package
+      run: |
+        tar -czf HIALTestHub.tar.gz bin/ config/ data/ pom.xml target/*.jar CHANGELOG.md
+
+    # Upload the HIALTestHub.tar.gz as an artifact
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
-        name: hialtesthub
-        path: target/*.jar  # Adjust this based on the output location of your JAR file
+        name: HIALTestHub
+        path: HIALTestHub.tar.gz
+
+    # Determine the next version based on the latest tag
+    - name: Determine next version
+      id: version
+      run: |
+        latest_tag=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+        echo "Latest tag: $latest_tag"
+        IFS='.' read -r major minor patch <<< "${latest_tag#v}"
+        new_patch=$((patch+1))
+        new_version="v$major.$minor.$new_patch"
+        echo "New version: $new_version"
+        echo "version=$new_version" >> $GITHUB_ENV
+
+    # Tag the release
+    - name: Tag the release
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git tag ${{ env.version }} -m "Release ${{ env.version }}"
+        git push origin ${{ env.version }}
+
+    # Create a GitHub Release and upload the HIALTestHub.tar.gz package as an asset
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      with:
+        tag_name: ${{ env.version }}
+        release_name: HIALTestHub Release ${{ env.version }}
+        body: |
+          Release notes for HIALTestHub version ${{ env.version }}.
+        draft: false
+        prerelease: false
+
+    # Upload HIALTestHub.tar.gz as the release asset
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: HIALTestHub.tar.gz
+        asset_name: HIALTestHub-${{ env.version }}.tar.gz
+        asset_content_type: application/gzip
 
   deploy:
     needs: build
