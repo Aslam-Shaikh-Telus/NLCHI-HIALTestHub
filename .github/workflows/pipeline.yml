@@ -32,44 +32,6 @@ jobs:
     - name: Build with Maven
       run: mvn clean install
 
-    # Install conventional-changelog-cli to generate CHANGELOG.md
-    - name: Install conventional-changelog-cli
-      run: |
-        npm install -g conventional-changelog-cli
-
-    # Generate/Update CHANGELOG.md based on conventional commits
-    - name: Generate changelog
-      run: |
-        conventional-changelog -p angular -i CHANGELOG.md -s
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    # Commit the updated CHANGELOG.md to a new branch
-    - name: Commit updated CHANGELOG.md
-      run: |
-        git checkout -b update-changelog
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add CHANGELOG.md
-        git commit -m "chore: update CHANGELOG.md for release ${{ env.version }}"
-        git push -u origin update-changelog
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    # Create a Pull Request for the changelog update
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        base: main
-        branch: update-changelog
-        title: "Update CHANGELOG.md for release ${{ env.version }}"
-        body: "This pull request updates the CHANGELOG.md file."
-
-    # Ensure the repository is in sync with the `update-changelog` branch before creating the tarball
-    - name: Checkout update-changelog branch
-      run: git checkout update-changelog
-
     # Create HIALTestHub.tar.gz package while excluding unwanted folders
     - name: Create HIALTestHub.tar.gz package
       run: |
