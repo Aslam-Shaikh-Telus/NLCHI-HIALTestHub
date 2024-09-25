@@ -50,13 +50,28 @@ jobs:
       run: |
         echo "Fetching tags from the remote repository..."
         git fetch --tags
+        
         echo "Available tags after fetch:"
         git tag
         
-        latest_tag=$(git describe --tags --abbrev=0 || echo "v0.0.0")
-        echo "Latest tag: $latest_tag"
+        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null)
+        
+        if [ -z "$latest_tag" ]; then
+          # If no reachable tag, get the latest tag from the repository tags
+          echo "No reachable tag found from the current commit. Checking available tags..."
+          latest_tag=$(git tag | sort -V | tail -n 1)
+          echo "Latest tag from repository: $latest_tag"
+        else
+          echo "Latest tag: $latest_tag"
+        fi
+        
+        
+        if [ -z "$latest_tag" ]; then
+          latest_tag="v0.0.0"
+        fi
+        
         IFS='.' read -r major minor patch <<< "${latest_tag#v}"
-        new_patch=$((patch+1))
+        new_patch=$((patch + 1))
         new_version="v$major.$minor.$new_patch"
         echo "New version: $new_version"
         echo "version=$new_version" >> $GITHUB_ENV
