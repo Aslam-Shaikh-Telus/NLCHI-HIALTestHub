@@ -32,10 +32,10 @@ jobs:
     - name: Build with Maven
       run: mvn clean install
 
-    # Create HIALTestHub.tar.gz package while excluding unwanted folders
-    - name: Create HIALTestHub.tar.gz package
+    # Create package.tar.gz package while excluding unwanted folders
+    - name: Create package.tar.gz package
       run: |
-        tar --exclude='.github/' --exclude='src/' -czf HIALTestHub.tar.gz bin/ config/ data/ pom.xml target/*.jar
+        tar --exclude='.github/' --exclude='src/' -czf package.tar.gz bin/ config/ data/ pom.xml target/*.jar
 
     # Upload the HIALTestHub.tar.gz as an artifact
     - name: Upload build artifact
